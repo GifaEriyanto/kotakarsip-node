@@ -1,0 +1,79 @@
+html
+
+	head
+		
+		meta(charset='UTF-8')
+		
+		link(href='/css/kotakarsip.css', rel='stylesheet')
+
+		style.
+			* {
+				font-size: 11px;
+			}
+			h1 {
+				font-size: 18px;
+				font-weight: bold;
+				margin-bottom: 20px;
+				text-transform: uppercase;
+			}
+			td {
+				font-size: 10px !important;
+			}
+
+	body
+
+		h1.text-center Laporan Surat Masuk
+
+		.table-responsive
+
+		table.table.table-hover.table-bordered
+
+			thead
+
+				tr
+
+					th #ID
+
+					th Tanggal Masuk
+
+					th Nomor Surat
+
+					th Asal Surat
+
+					th Perihal
+
+					th Rak
+
+					th Disposisi
+
+			tbody
+
+				style.
+
+					tbody td {
+						font-size: 12px;
+					}
+
+				- for row in data
+
+					- var str = row.inbox_file
+
+					- var ext = str.substr(str.length - 3, str.length);
+
+					tr(style='cursor: pointer', data-toggle='modal', data-target='#detail-sm', data-id='#{ row.id }', data-title='#{ row.inbox_from }', data-rak='#{ row.rack_number }', data-img='/uploads/inbox/#{ row.inbox_file }', data-ext='#{ ext }')
+
+						td ##{ row.id }
+
+						td #{ row.inbox_date }
+
+						td #{ row.inbox_number }
+
+						td #{ row.inbox_from }
+
+						td #{ row.inbox_desc }
+
+						td #{ row.rack_number }
+
+						td Direktur, Sekretaris
+
+				- endfor

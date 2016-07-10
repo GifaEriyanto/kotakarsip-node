@@ -1,0 +1,131 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.main-section
+
+			form.form-custom.row(action='')
+
+				.col-md-2
+
+					select.testsel(name='rak', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
+
+						option(value='Rak 1') Rak 1
+
+						option(value='Rak 2') Rak 2
+
+						option(value='Rak 3') Rak 3
+
+				.col-md-4
+
+					input#rangePicker(type='text', placeholder='Rentang Waktu', readonly='')
+
+				.col-md-6
+
+					input(type='text', placeholder='Pencarian')
+
+					button.btn-search
+
+						i.fa.fa-search
+
+		section.container.default-section
+
+			.bread
+
+				a(href='/') Beranda
+
+				i.fa.fa-angle-right
+
+				a(href='/surat-masuk') Surat Masuk
+
+				i.fa.fa-angle-right
+
+				b Lorem ipsum dolor sit
+
+			br
+
+			br
+
+			.row
+
+				- for row in data
+
+					- var str = row.inbox_file
+
+					- var ext = str.substr(str.length - 3, str.length);
+
+					.col-md-6
+
+						- if ( ext === "pdf" ) {
+
+							iframe#pdf.object-circled(width='100%', height='500px', src='/uploads/inbox/#{ row.inbox_file }', type='application/pdf')
+
+						- } else {
+
+							img#img(src='/uploads/inbox/#{ row.inbox_file }', width='100%')
+
+						- }
+
+
+					.col-md-6
+
+						ul.detail-arsip
+
+
+								li
+
+									label ID
+
+									span ##{ row.id }
+
+								li
+
+									label Tanggal Masuk
+
+									span #{ row.inbox_date }
+
+								li
+
+									label Asal Surat
+
+									span #{ row.inbox_from }
+
+								li
+
+									label Nomor Surat
+
+									span #{ row.inbox_number }
+
+								li
+
+									label Perihal
+
+									span #{ row.inbox_title }
+
+								li
+
+									label Rak
+
+									span #{ row.rack_number }
+
+								li
+
+									label Disposisi
+
+									span Direktur, Sekretaris
+
+								li
+
+									label Keterangan
+
+									span #{ row.inbox_desc !== '' ? row.inbox_desc : "-" }
+
+				- endfor

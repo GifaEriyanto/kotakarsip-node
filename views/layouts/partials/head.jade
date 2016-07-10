@@ -1,0 +1,132 @@
+.profil-responsive
+
+	ul
+
+		li.user-thumbs
+
+			img(src='/img/user/user-thumbs.png', alt='', width='28px')
+
+			span   Gifa Eriyanto  
+
+		li
+
+			a(href='setelan.html')
+
+				i.fa.fa-cog
+
+				|   Setelan
+
+		li
+
+			a(href='login.html')
+
+				i.fa.fa-power-off
+
+				|   Keluar
+
+.overlay-profil-responsive
+
+
+	
+
+nav
+
+	.container
+
+		.pull-left.logo
+
+			a(href='index.html')
+
+				img(src='/img/logo.svg', alt='', width='26px')
+
+				b KOTAK ARSIP
+
+		.pull-right.top-responsive
+
+			a.show-profil-responsive(href='#')
+
+				i.fa.fa-bars
+
+		.pull-right(style='height: 50px;')
+
+			ul.link
+
+				li.dropdown.hide-dropdown
+
+					button#dropdownMenu1.btn.dropdown-custom.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='true')
+
+						img(src='/img/user/user-thumbs.png', alt='', width='28px')
+
+						span   Gifa Eriyanto  
+
+						i.fa.fa-angle-down
+
+					ul.dropdown-menu.pull-right(role='menu', aria-labelledby='dropdownMenu1', style='right: 4px;')
+
+						li(role='presentation')
+
+							a(role='menuitem', tabindex='-1', href='pengaturan-akun.html')
+
+								i.fa.fa-cog
+
+								|   Pengaturan Akun
+
+						li(role='presentation')
+
+							a(role='menuitem', tabindex='-1', href='login.html')
+
+								i.fa.fa-power-off
+
+								|   Keluar
+
+				li.dropdown
+
+					button#dropdownMenu1.btn.dropdown-custom.dropdown-toggle.badge-active(type='button', data-toggle='dropdown', aria-expanded='true')
+
+						i.fa.fa-bell
+
+							.badge-on
+
+					ul.dropdown-menu.pull-right(role='menu', aria-labelledby='dropdownMenu1', style='right: 4px;max-width: 400px;')
+
+						li(role='presentation')
+
+							a.ellipsis(role='menuitem', tabindex='-1', href='#')
+
+								i.fa.fa-file-text
+
+								|  &nbsp;&nbsp;
+
+								b Alfian
+
+								|  menambahkan dokumen baru
+
+						li(role='presentation')
+
+							div(style='width: 100%;height: 1px;background: #202020')
+
+						li(role='presentation')
+
+							a(role='menuitem', tabindex='-1', href='pemberitahuan.html')
+
+								center Selengkapnya
+
+.nav
+
+	.container
+
+		ul.link.pull-left
+
+			each menu in path
+
+				li(class="#{ menuActive === menu.link ? 'actived' : '' }")
+
+					a.list(href='#{ menu.link }') #{ menu.caption }
+
+		ul.link.pull-right
+
+			li#nav-master
+
+				a.list(href='/master')
+
+					i.fa.fa-plus

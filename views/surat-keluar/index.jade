@@ -1,0 +1,189 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.main-section
+
+			form.form-custom.row(action='')
+
+				.col-md-2
+
+					select.testsel(name='rak', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
+
+						- for row in data_rak
+
+							option(value='#{ row.rack_number }') Rak #{ row.rack_number }
+
+						- endfor
+
+				.col-md-4
+
+					input#rangePicker(type='text', placeholder='Rentang Waktu', readonly='')
+
+				.col-md-6
+
+					input(type='text', placeholder='Pencarian')
+
+					button.btn-search
+
+						i.fa.fa-search
+
+		section.container.default-section
+
+			.bread
+
+				a(href='/') Beranda
+
+				i.fa.fa-angle-right
+
+				b Surat Keluar
+
+				span.display
+
+					a.active(href='#{ currentPage }')
+
+						i.fa.fa-th
+
+					a(href='#{ currentPage }/list')
+
+						i.fa.fa-list
+
+			.row(style='margin-top: 10px')
+
+				.col-md-4
+
+					input.search-2(type='text', placeholder='Pencarian')
+
+				.col-md-8
+
+					a.btn-icon.btn-icon-info.pull-right.add-large(href='#{ currentPage }/tambah')
+
+						i.fa.fa-plus
+
+						| Tambah baru
+
+					a.btn-icon.btn-icon-orange.pull-right(href="javascript: w=window.open('#{ currentPage }/cetak'); w.print();")
+
+						i.fa.fa-print
+
+						| Cetak Laporan
+
+					a.btn-icon.btn-icon-success.pull-right(href='')
+
+						i.fa.fa-file-excel-o
+
+						| Ekspor ke Excel
+
+				a.btn-circled.add-small(href='#{ currentPage }/tambah')
+
+					img(src='/img/plus.svg', width='40%')
+
+			br
+
+			br
+
+			.row
+
+				- for row in data
+
+					.col-md-2.col-xs-6.item-arsip(data-toggle='modal', data-target='#detail-sk', data-id='#{ row.id }', data-title='#{ row.outbox_for }', data-rak='#{ row.rack_number }', data-img='/img/arsip/dok-1.png')
+
+						a(data-toggle='tooltip', data-placement='top', title="<span class='title-custom'>##{ row.id }</span><span class='title-custom'>Surat untuk <b>#{ row.outbox_for }</b></span><span class='title-custom'>Rak #{ row.rack_number }</span>")
+
+							.item-arsip-thumbs(style='background-image: url(/img/arsip/dok-1.png);')
+
+								span.tag pdf
+
+							.item-arsip-name
+
+								.ellipsis ##{ row.id } #{ row.outbox_for }
+
+				- endfor
+
+				- if (data.length < 1) {
+
+					.col-md-12.empty
+
+						img(src='/img/not_found.png', width='80px')
+
+						br
+						br
+
+						|  Belum ada Surat Keluar
+
+				- }
+
+			center
+
+				.pagination
+
+					ul
+
+						- if (pages.length > 1)
+
+							- for page in pages
+
+								li
+
+									a(href='#{ currentPage }?page=#{ page }', class="#{ pageActive == page ? 'actived' : '' }") #{ page }
+
+							- endfor
+
+
+	#detail-sk.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+
+		.modal-dialog.modal-lg
+
+			.modal-content
+
+				.modal-header
+
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+
+						span(aria-hidden='true') ×
+
+					h4.modal-title
+
+						| Surat untuk 
+
+						b#title Modal title
+
+				.modal-body
+
+					br
+
+					center
+
+						b
+							| #
+							span#id(style='font-size: 18px;')
+
+						br
+
+						b Tempat Penyimpanan
+
+						|  : Rak 
+
+						b#rak(style='font-size: 18px;')
+
+					br
+
+					img#img(src='/img/arsip/dok-1.png', width='100%')
+
+					// <object class="object-circled" width="100%" height="500px" data="/img/arsip/dok-2.pdf#view=FitH" type="application/pdf"></object>
+
+				.modal-footer
+
+					a.btn.btn-warning.pull-left(data-url='#{ currentPage + "/sunting" }') Sunting
+
+					a.btn.btn-danger.pull-left(data-url='#{ currentPage + "/hapus" }') Hapus
+
+					a.btn.btn-primary(data-url='#{ currentPage + "/detail" }') Selengkapnya

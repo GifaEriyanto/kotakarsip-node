@@ -1,0 +1,152 @@
+doctype html
+
+html(lang='en')
+
+	head
+
+		meta(name='keyword', content='')
+
+		meta(name='description', content='')
+
+		meta(name='author', content='')
+
+		meta(property='og:image', content='/assets/img/logo.svg')
+
+		meta(charset='UTF-8')
+
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+
+		title Kotakarsip
+
+		link(rel='icon', sizes='16x16', href='/assets/img/favicon.png')
+
+		link(rel='stylesheet', href='/assets/libs/font-icons/entypo/css/entypo.css')
+
+		link(rel='stylesheet', href='/assets/libs/font-icons/font-awesome/css/font-awesome.min.css')
+
+		link(href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,700,300,600,800,400', rel='stylesheet', type='text/css')
+
+		link(rel='stylesheet', href='/assets/libs/jquery-ui/jquery-ui.css')
+
+		link(href='/assets/libs/sumoselect/sumoselect.css', rel='stylesheet')
+
+		link(href='/assets/libs/bootstrap-switch-master/dist/css/bootstrap3/bootstrap-switch.css', rel='stylesheet')
+
+		link(rel='stylesheet', type='text/css', href='/assets/libs/datepick/jquery.datepick.css')
+
+		link(href='/assets/css/kotakarsip.css', rel='stylesheet')
+
+		style.
+
+			.form {
+
+			width: 100%;
+
+			max-width: 400px;
+
+			margin: auto;
+
+			text-align: center;
+
+			padding: 30px;
+
+			}
+
+			.form input {
+
+			width: 100%;
+
+			padding: 13px 13px;
+
+			border: none;
+
+			outline: none;
+
+			color: #000;
+
+			}
+
+			.form button {
+
+			background: #4ba9e8;
+
+			color: #fff;
+
+			outline: none;
+
+			border-radius: 100px;
+
+			border: none;
+
+			padding: 13px 13px;
+
+			width: 100%;
+
+			}
+
+			.form .form-group:first-child {
+
+			margin-bottom: 0;
+
+			}
+
+			.form .form-group:first-child input {
+
+			border-top-left-radius: 10px;
+
+			border-top-right-radius: 10px;
+
+			border-bottom: 1px solid #ddd;
+
+			}
+
+			.form .form-group:nth-child(2) input {
+
+			border-bottom-left-radius: 10px;
+
+			border-bottom-right-radius: 10px;
+
+			}
+
+	body(style='background: #3498db')
+
+		#container
+
+			.overlay-profil-responsive
+
+			nav(style='background: #3498db; height: auto; padding-top: 100px;')
+
+				.container
+
+					.text-center
+
+						.logo
+
+							a(href='/')
+
+								img(src='/assets/img/logo.svg', alt='', width='26px')
+
+								b KOTAK ARSIP
+
+			.nav(style='padding-bottom: 0; padding-top: 0; height: calc(100vh - 160px); background: #3498db')
+
+				.form
+
+					form(action='/')
+
+						.form-group
+
+							input(type='text', placeholder='Username')
+
+						.form-group
+
+							input(type='password', placeholder='Password')
+
+						.form-group
+
+							button Login
+
+		script(src='/assets/js/kotakarsip.js')
+
+		script(src='/assets/js/scrolltobyspeed.jquery.js')
+

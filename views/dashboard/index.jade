@@ -1,0 +1,283 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.main-section
+
+			form.form-custom.row(action='')
+
+				.col-md-2
+
+					select.testsel(name='rak', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
+
+						- for row in data_rak
+
+							option(value='#{ row.rack_number }') Rak #{ row.rack_number }
+
+						- endfor
+
+				.col-md-4
+
+					input#rangePicker(type='text', placeholder='Rentang Waktu', readonly='')
+
+				.col-md-6
+
+					input(type='text', placeholder='Pencarian')
+
+					button.btn-search
+
+						i.fa.fa-search
+
+		section.container
+
+			.row
+
+				.col-sm-6.col-xs-12
+
+					.tile.tile-blue
+
+						.col-md-5
+
+							i.fa.fa-inbox.tile-icon-shadow
+
+							i.fa.fa-inbox.tile-icon
+
+						.col-md-7
+
+							h3 Surat Masuk
+
+							ul.lsnone.tile-list
+
+								- for row in data_sm_count
+
+									li
+
+										a(href='') #{ row.count } arsip di Rak #{ row.rack_number }
+
+								- endfor
+
+						a.btn-right.btn-right-blue(href='/surat-masuk')
+
+							i.fa.fa-angle-right
+
+				.col-sm-6.col-xs-12
+
+					.tile.tile-orange
+
+						.col-md-5
+
+							i.fa.fa-send.tile-icon-shadow(style='top: 30px; font-size: 150px;')
+
+							i.fa.fa-send.tile-icon
+
+						.col-md-7
+
+							h3 Surat Keluar
+
+							ul.lsnone.tile-list
+
+								- for row in data_sk_count
+
+									li
+
+										a(href='') #{ row.count } arsip di Rak #{ row.rack_number }
+
+								- endfor
+
+						a.btn-right.btn-right-orange(href='/surat-keluar')
+
+							i.fa.fa-angle-right
+
+		section.container.default-section
+
+			.headline Surat Masuk Terbaru
+
+			.row
+
+				- for row in data_sm
+
+					- var str = row.inbox_file
+
+					- var file = "/img/pdf.jpg"
+
+					- var ext = str.substr(str.length - 3, str.length);
+
+					.col-md-2.col-xs-6.item-arsip(data-toggle='modal', data-target='#detail-sm', data-id='#{ row.id }', data-title='#{ row.inbox_from }', data-rak='#{ row.rack_number }', data-img='/uploads/inbox/#{ row.inbox_file }', data-ext='#{ ext }')
+
+						a(data-toggle='tooltip', data-placement='top', title="<span class='title-custom'>##{ row.id }</span><span class='title-custom'>Surat dari <b>#{ row.inbox_from }</b></span><span class='title-custom'>Rak #{ row.rack_number }</span>")
+
+							- if ( ext !== "pdf" ) file = "/uploads/inbox/" + row.inbox_file;
+
+							.item-arsip-thumbs(style='background-image: url(#{ file });')
+
+								span.tag #{ ext }
+
+							.item-arsip-name
+
+								.ellipsis ##{ row.id } #{ row.inbox_from }
+
+				- endfor
+
+				- if (data_sm.length < 1) {
+
+					.col-md-12.empty
+
+						img(src='/img/not_found.png', width='80px')
+
+						br
+						br
+
+						|  Belum ada Surat Masuk
+
+				- }
+
+		section.container.default-section
+
+			.headline Surat Keluar Terbaru
+
+			.row
+
+				- for row in data_sk
+
+					- var str = row.outbox_file
+
+					- var file = "/img/pdf.jpg"
+
+					- var ext = str.substr(str.length - 3, str.length);
+
+					.col-md-2.col-xs-6.item-arsip(data-toggle='modal', data-target='#detail-sm', data-id='#{ row.id }', data-title='#{ row.outbox_for }', data-rak='#{ row.rack_number }', data-img='/uploads/outbox/#{ row.outbox_file }', data-ext='#{ ext }')
+
+						a(data-toggle='tooltip', data-placement='top', title="<span class='title-custom'>##{ row.id }</span><span class='title-custom'>Surat dari <b>#{ row.outbox_for }</b></span><span class='title-custom'>Rak #{ row.rack_number }</span>")
+
+							- if ( ext !== "pdf" ) file = "/uploads/outbox/" + row.outbox_file;
+
+							.item-arsip-thumbs(style='background-image: url(#{ file });')
+
+								span.tag #{ ext }
+
+							.item-arsip-name
+
+								.ellipsis ##{ row.id } #{ row.outbox_from }
+
+				- endfor
+
+				- if (data_sk.length < 1) {
+
+					.col-md-12.empty
+
+						img(src='/img/not_found.png', width='80px')
+
+						br
+						br
+
+						|  Belum ada Surat Masuk
+
+				- }
+
+	#detail-sm.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+
+		.modal-dialog.modal-lg
+
+			.modal-content
+
+				.modal-header
+
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+
+						span(aria-hidden='true') ×
+
+					h4.modal-title
+
+						| Surat dari 
+
+						b#title Modal title
+
+				.modal-body
+
+					br
+
+					center
+
+						b
+							| #
+							span#id(style='font-size: 18px;')
+
+						br
+
+						b Tempat Penyimpanan
+
+						|  : Rak 
+
+						b#rak(style='font-size: 18px;')
+
+					br
+
+					img#img(src='/img/arsip/dok-1.png', width='100%')
+
+					// <object class="object-circled" width="100%" height="500px" data="/img/arsip/dok-2.pdf#view=FitH" type="application/pdf"></object>
+
+				.modal-footer
+
+					a.btn.btn-warning.pull-left(data-url='surat-masuk/sunting') Sunting
+
+					a.btn.btn-danger.pull-left(data-url='surat-masuk/hapus') Hapus
+
+					a.btn.btn-primary(data-url='surat-masuk/detail') Selengkapnya
+
+	#detail-sk.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+
+		.modal-dialog.modal-lg
+
+			.modal-content
+
+				.modal-header
+
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+
+						span(aria-hidden='true') ×
+
+					h4.modal-title
+
+						| Surat untuk 
+
+						b#title Modal title
+
+				.modal-body
+
+					br
+
+					center
+
+						b
+							| #
+							span#id(style='font-size: 18px;')
+
+						br
+
+						b Tempat Penyimpanan
+
+						|  : Rak 
+
+						b#rak(style='font-size: 18px;')
+
+					br
+
+					img#img(src='/img/arsip/dok-1.png', width='100%')
+
+					// <object class="object-circled" width="100%" height="500px" data="/img/arsip/dok-2.pdf#view=FitH" type="application/pdf"></object>
+
+				.modal-footer
+
+					a.btn.btn-warning.pull-left(data-url='surat-keluar/sunting') Sunting
+
+					a.btn.btn-danger.pull-left(data-url='surat-keluar/hapus') Hapus
+
+					a.btn.btn-primary(data-url='surat-keluar/detail') Selengkapnya

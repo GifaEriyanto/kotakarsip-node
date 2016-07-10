@@ -1,0 +1,73 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.default-section
+
+			.headline Tambah Surat Masuk Baru
+
+			form.form-custom.row(action='/surat-masuk/tambah', method='POST', enctype='multipart/form-data')
+
+				.col-md-6
+
+					input(type='hidden', name='id_user', value='2')
+
+					input#defaultActualPicker(type='text', name='inbox_date', style='cursor:pointer', placeholder='Tanggal Masuk', required, autocomplete='off')
+
+					input(type='text', name='inbox_from', placeholder='Asal Surat', required)
+
+					input(type='text', name='inbox_number', placeholder='Nomor Surat', required)
+
+					input(type='text', name='inbox_title', placeholder='Perihal', required)
+
+					select(name='id_rack', placeholder='Rak', required)
+
+						- for row in data_rak
+
+							option(value='#{ row.id }') Rak #{ row.rack_number }
+
+						- endfor
+
+					select.testsel(name='inbox_disposition', multiple='multiple', placeholder='Disposisi', onchange="console.log($(this).children(':selected').length)", required)
+
+						- for row in data_disposisi
+
+							option(value='#{ row.id }') #{ row.disposition_position } (#{ row.disposition_name })
+
+						- endfor
+
+				.col-md-6
+
+					textarea(name='inbox_desc', rows='5', placeholder='Keterangan')
+
+					br
+
+					br
+
+					label(for='') Hasil Scan Surat
+
+					input(type='file', name='inbox_file', placeholder='Gambar', accept='.pdf,.jpg,.png', multiple='', required)
+
+				.col-md-12
+
+					hr
+
+					a.btn-icon.btn-icon-default.pull-right.add-large(href='surat-masuk.html')
+
+						i.fa.fa-angle-left
+
+						| Kembali
+
+					button.btn-icon.btn-icon-info.pull-right.add-large(name='insert', value='true')
+
+						i.fa.fa-floppy-o
+
+						| Simpan

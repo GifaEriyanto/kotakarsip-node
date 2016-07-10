@@ -1,0 +1,97 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.default-section
+
+			.headline Sunting Surat Masuk ##{ id }
+
+			form.form-custom.row(action='/surat-masuk/sunting/#{ id }', method='POST', enctype='multipart/form-data')
+
+				.col-md-6
+
+					input(type='hidden', name='id_user', value='#{ id_user }')
+
+					input#defaultActualPicker(type='text', style='cursor:pointer', placeholder='Tanggal Masuk', value='#{ inbox_date }', autocomplete='off')
+
+					input(type='text', name='inbox_from', placeholder='Asal Surat', value='#{ inbox_from }', required)
+
+					input(type='text', name='inbox_number', placeholder='Nomor Surat', value='#{ inbox_number }', required)
+
+					input(type='text', name='inbox_title', placeholder='Perihal', value='#{ inbox_title }', required)
+
+					select(name='id_rack', placeholder='Rak', required)
+
+						- for row in data_rak
+
+							- if (row.id === id_rack) { 
+
+								option(value='#{ row.id }', selected) Rak #{ row.rack_number }
+
+							- } else {
+
+								option(value='#{ row.id }') Rak #{ row.rack_number }
+
+							- }
+
+						- endfor
+
+					select.testsel(name='inbox_disposition', multiple='multiple', placeholder='Disposisi', onchange="console.log($(this).children(':selected').length)", required)
+
+						- for row in data_disposisi
+
+							- var select = "";
+
+							- for (var i = 0; i < inbox_disposition.length; i++) {
+
+								- if (inbox_disposition[i] === row.id) { select = "true"; break; } else { select = "false" }
+
+							- }
+
+							- if ( select === "true" ) {
+
+								option(value='#{ row.id }', selected) #{ row.disposition_name }
+
+							- } else {
+
+								option(value='#{ row.id }') #{ row.disposition_name }
+
+							- }
+
+						- endfor
+
+				.col-md-6
+
+					textarea(name='inbox_desc', rows='5', placeholder='Keterangan') #{ inbox_desc }
+
+					br
+
+					br
+
+					label(for='') Hasil Scan Surat
+
+					input(type='file', name='inbox_file', placeholder='Gambar', accept='image/*', multiple='', required)
+
+				.col-md-12
+
+					hr
+
+					a.btn-icon.btn-icon-default.pull-right.add-large(href='surat-masuk.html')
+
+						i.fa.fa-angle-left
+
+						| Kembali
+
+					button.btn-icon.btn-icon-info.pull-right.add-large
+
+						i.fa.fa-floppy-o
+
+						| Simpan

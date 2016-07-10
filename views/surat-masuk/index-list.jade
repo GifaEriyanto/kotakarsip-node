@@ -1,0 +1,212 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.main-section
+
+			form.form-custom.row(action='')
+
+				.col-md-2
+
+					select.testsel(name='rak', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
+
+						option(value='Rak 1') Rak 1
+
+						option(value='Rak 2') Rak 2
+
+						option(value='Rak 3') Rak 3
+
+				.col-md-4
+
+					input#rangePicker(type='text', placeholder='Rentang Waktu', readonly='')
+
+				.col-md-6
+
+					input(type='text', placeholder='Pencarian')
+
+					button.btn-search
+
+						i.fa.fa-search
+
+		section.container.default-section
+
+			.bread
+
+				a(href='/') Beranda
+
+				i.fa.fa-angle-right
+
+				b Surat Masuk
+
+				span.display
+
+					a(href='#{ currentPage }')
+
+						i.fa.fa-th
+
+					a.active(href='#{ currentPage + "/list" }')
+
+						i.fa.fa-list
+
+			.row(style='margin-top: 10px')
+
+				.col-md-4
+
+					input.search-2(type='text', placeholder='Pencarian')
+
+				.col-md-8
+
+					a.btn-icon.btn-icon-info.pull-right.add-large(href='#{ currentPage + "/tambah" }')
+
+						i.fa.fa-plus
+
+						| Tambah baru
+
+					a.btn-icon.btn-icon-orange.pull-right(href="javascript: w=window.open('#{ currentPage }/cetak'); w.print();")
+
+						i.fa.fa-print
+
+						| Cetak Laporan
+
+					a.btn-icon.btn-icon-success.pull-right(href='')
+
+						i.fa.fa-file-excel-o
+
+						| Ekspor ke Excel
+
+				a.btn-circled.add-small(href='#{ currentPage + "/tambah" }')
+
+					img(src='/img/plus.svg', width='40%')
+
+			br
+
+			br
+
+			.table-responsive
+
+				table.table.table-hover.table-bordered
+
+					thead
+
+						tr
+
+							th #ID
+
+							th Tanggal Masuk
+
+							th Nomor Surat
+
+							th Asal Surat
+
+							th Perihal
+
+							th Rak
+
+							th Disposisi
+
+					tbody
+
+						style.
+
+							tbody td {
+								font-size: 12px;
+							}
+
+						- for row in data
+
+							- var str = row.inbox_file
+
+							- var ext = str.substr(str.length - 3, str.length);
+
+							tr(style='cursor: pointer', data-toggle='modal', data-target='#detail-sm', data-id='#{ row.id }', data-title='#{ row.inbox_from }', data-rak='#{ row.rack_number }', data-img='/uploads/inbox/#{ row.inbox_file }', data-ext='#{ ext }')
+
+								td ##{ row.id }
+
+								td #{ row.inbox_date }
+
+								td #{ row.inbox_number }
+
+								td #{ row.inbox_from }
+
+								td #{ row.inbox_desc }
+
+								td #{ row.rack_number }
+
+								td Direktur, Sekretaris
+
+						- endfor
+
+			center
+
+				.pagination
+
+					ul
+
+						- if (pages.length > 1)
+
+							- for page in pages
+
+								li
+
+									a(href='#{ currentPage }/list?page=#{ page }', class="#{ pageActive == page ? 'actived' : '' }") #{ page }
+
+							- endfor
+
+	#detail-sm.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+
+		.modal-dialog.modal-lg
+
+			.modal-content
+
+				.modal-header
+
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+
+						span(aria-hidden='true') ×
+
+					h4.modal-title
+
+						| Surat dari #{ ext }
+
+						b#title
+
+				.modal-body
+
+					br
+
+					center
+
+						b
+							| #
+							span#id(style='font-size: 18px;')
+
+						br
+
+						b Tempat Penyimpanan
+
+						|  : Rak 
+
+						b#rak(style='font-size: 18px;')
+
+						br
+						br
+
+						img#img(src='', width='100%')
+
+						iframe#pdf.object-circled(width='100%', height='500px', src='', type='application/pdf')
+
+				.modal-footer
+
+					a.btn.btn-warning.pull-left(data-url='#{ currentPage + "/sunting" }') Sunting
+
+					a.btn.btn-danger.pull-left(data-url='#{ currentPage + "/hapus" }') Hapus
+
+					a.btn.btn-primary(data-url='#{ currentPage + "/detail" }') Selengkapnya
