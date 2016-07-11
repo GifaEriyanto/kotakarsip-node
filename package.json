@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "multer": "^1.1.0",
-    "mysql": "^2.11.1"
+    "mysql": "^2.11.1",
+    "pagination": "^0.4.4"
   }
 }
