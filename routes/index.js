@@ -177,13 +177,7 @@ router.post('/surat-masuk/tambah', upload.single('inbox_file'), function(req, re
 	connection.query('INSERT INTO app_inbox SET ?', post, function(err, result) {
 		if (err) throw err;
 
-		res.render('./surat-masuk/tambah', {
-			title : "Tambah Surat Masuk Baru",
-			path : variable.nav,
-			menuActive : "/surat-masuk",
-			data_disposisi : data_disposisi,
-			data_rak : data_rak,
-		})
+		res.redirect('/surat-masuk/tambah');
 	});
 
 });
@@ -231,22 +225,7 @@ router.post('/surat-masuk/sunting/:id', upload.single('inbox_file'), function(re
 	connection.query('UPDATE app_inbox SET id_user = ?, id_rack = ?, inbox_date = ?, inbox_from = ?, inbox_number = ?, inbox_title = ?, inbox_desc = ? WHERE id = ?', [post.id_user, post.id_rack, post.inbox_date, post.inbox_from, post.inbox_number, post.inbox_title, post.inbox_desc, post.id], function(err, result) {
 		if (err) throw err;
 
-		res.render('./surat-masuk/sunting', {
-			title : "Sunting Surat Masuk #" + req.params.id,
-			path : variable.nav,
-			menuActive : "/surat-masuk",
-			id : req.params.id,
-			id_user : req.body.id_user,
-			id_rack : req.body.id_rack,
-			inbox_date : req.body.inbox_date,
-			inbox_from : req.body.inbox_from,
-			inbox_number : req.body.inbox_number,
-			inbox_title : req.body.inbox_title,
-			inbox_desc : req.body.inbox_desc,
-			inbox_disposition : req.body.inbox_disposition,
-			data_disposisi : data_disposisi,
-			data_rak : data_rak
-		})
+		res.redirect('/surat-masuk/sunting/' + req.param.id)
 	});
 
 });
