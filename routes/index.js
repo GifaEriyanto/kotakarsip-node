@@ -149,67 +149,63 @@ router.get('/surat-masuk/list', function (req, res, next) {
 
 
 
-router.get('/surat-masuk/tambah', function (req, res, next) {
-	res.render('./surat-masuk/tambah', {
-		title : "Tambah Surat Masuk Baru",
-		path : variable.nav,
-		menuActive : "/surat-masuk",
-		data_disposisi : data_disposisi,
-		data_rak : data_rak
-	})
-})
-
-
-
-router.post('/surat-masuk/tambah', upload.single('inbox_file'), function(req, res) {
-	var post = {
-		id_user : req.body.id_user,
-		id_rack : req.body.id_rack,
-		inbox_date : req.body.inbox_date,
-		inbox_from : req.body.inbox_from,
-		inbox_number : req.body.inbox_number,
-		inbox_title : req.body.inbox_title,
-		inbox_desc : req.body.inbox_desc,
-		inbox_disposition : req.body.inbox_disposition.toString(),
-		inbox_file : req.file.filename
-	}
-
-	connection.query('INSERT INTO app_inbox SET ?', post, function(err, result) {
-		if (err) throw err;
-
-		res.redirect('/surat-masuk/tambah');
-	});
-
-});
-
-
-
-router.get('/surat-masuk/sunting/:id', function (req, res, next) {
-	connection.query("SELECT * FROM view_inbox WHERE id = " + req.params.id, function (err, rows, field) {
-		var dis = "["+rows[0].inbox_disposition+"]";
-		res.render('./surat-masuk/sunting', {
-			title : "Sunting Surat Masuk #" + req.params.id,
+router
+	.get('/surat-masuk/tambah', function (req, res, next) {
+		res.render('./surat-masuk/tambah', {
+			title : "Tambah Surat Masuk Baru",
 			path : variable.nav,
 			menuActive : "/surat-masuk",
-			id : req.params.id,
-			id_user : rows[0].id_user,
-			id_rack : rows[0].id_rack,
-			inbox_date : rows[0].inbox_date,
-			inbox_from : rows[0].inbox_from,
-			inbox_number : rows[0].inbox_number,
-			inbox_title : rows[0].inbox_title,
-			inbox_desc : rows[0].inbox_desc,
-			inbox_disposition : JSON.parse(dis),
 			data_disposisi : data_disposisi,
 			data_rak : data_rak
 		})
-
 	})
-})
+	.post('/surat-masuk/tambah', upload.single('inbox_file'), function(req, res) {
+		var post = {
+			id_user : req.body.id_user,
+			id_rack : req.body.id_rack,
+			inbox_date : req.body.inbox_date,
+			inbox_from : req.body.inbox_from,
+			inbox_number : req.body.inbox_number,
+			inbox_title : req.body.inbox_title,
+			inbox_desc : req.body.inbox_desc,
+			inbox_disposition : req.body.inbox_disposition.toString(),
+			inbox_file : req.file.filename
+		}
+
+		connection.query('INSERT INTO app_inbox SET ?', post, function(err, result) {
+			if (err) throw err;
+
+			res.redirect('/surat-masuk/tambah');
+		});
+
+	});
 
 
 
-router.post('/surat-masuk/sunting/:id', upload.single('inbox_file'), function(req, res) {
+router
+	.get('/surat-masuk/sunting/:id', function (req, res, next) {
+		connection.query("SELECT * FROM view_inbox WHERE id = " + req.params.id, function (err, rows, field) {
+			var dis = "["+rows[0].inbox_disposition+"]";
+			res.render('./surat-masuk/sunting', {
+				title : "Sunting Surat Masuk #" + req.params.id,
+				path : variable.nav,
+				menuActive : "/surat-masuk",
+				id : req.params.id,
+				id_user : rows[0].id_user,
+				id_rack : rows[0].id_rack,
+				inbox_date : rows[0].inbox_date,
+				inbox_from : rows[0].inbox_from,
+				inbox_number : rows[0].inbox_number,
+				inbox_title : rows[0].inbox_title,
+				inbox_desc : rows[0].inbox_desc,
+				inbox_disposition : JSON.parse(dis),
+				data_disposisi : data_disposisi,
+				data_rak : data_rak
+			})
+
+		})
+	})
+	.post('/surat-masuk/sunting/:id', upload.single('inbox_file'), function(req, res) {
 	var post = {
 		id_user : req.body.id_user,
 		id_rack : req.body.id_rack,
