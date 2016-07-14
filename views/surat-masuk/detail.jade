@@ -10,31 +10,7 @@ block content
 
 	#body
 
-		section.container.main-section
-
-			form.form-custom.row(action='')
-
-				.col-md-2
-
-					select.testsel(name='rak', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
-
-						option(value='Rak 1') Rak 1
-
-						option(value='Rak 2') Rak 2
-
-						option(value='Rak 3') Rak 3
-
-				.col-md-4
-
-					input#rangePicker(type='text', placeholder='Rentang Waktu', readonly='')
-
-				.col-md-6
-
-					input(type='text', placeholder='Pencarian')
-
-					button.btn-search
-
-						i.fa.fa-search
+		include ../layouts/partials/search
 
 		section.container.default-section
 
@@ -90,7 +66,7 @@ block content
 
 									label Tanggal Masuk
 
-									span #{ row.inbox_date }
+									span #{ date }
 
 								li
 
@@ -120,7 +96,25 @@ block content
 
 									label Disposisi
 
-									span Direktur, Sekretaris
+									span
+
+										- for row in data_disposisi
+
+											- for (var i2 = 0; i2 < inbox_disposition.length; i2++) {
+
+												- console.log(row.id)
+
+												- if (inbox_disposition[i2] === row.id) {
+
+													|  #{ "- " + row.disposition_name }
+
+													br
+
+												- }
+
+											- }
+
+										- endfor
 
 								li
 

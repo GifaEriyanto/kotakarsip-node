@@ -10,31 +10,7 @@ block content
 
 	#body
 
-		section.container.main-section
-
-			form.form-custom.row(action='')
-
-				.col-md-2
-
-					select.testsel(name='rak', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
-
-						- for row in data_rak
-
-							option(value='#{ row.rack_number }') Rak #{ row.rack_number }
-
-						- endfor
-
-				.col-md-4
-
-					input#rangePicker(type='text', placeholder='Rentang Waktu', readonly='')
-
-				.col-md-6
-
-					input(type='text', placeholder='Pencarian')
-
-					button.btn-search
-
-						i.fa.fa-search
+		include ../layouts/partials/search
 
 		section.container.default-section
 
@@ -94,13 +70,21 @@ block content
 
 				- for row in data
 
-					.col-md-2.col-xs-6.item-arsip(data-toggle='modal', data-target='#detail-sk', data-id='#{ row.id }', data-title='#{ row.outbox_for }', data-rak='#{ row.rack_number }', data-img='/img/arsip/dok-1.png')
+					- var str = row.outbox_file
 
-						a(data-toggle='tooltip', data-placement='top', title="<span class='title-custom'>##{ row.id }</span><span class='title-custom'>Surat untuk <b>#{ row.outbox_for }</b></span><span class='title-custom'>Rak #{ row.rack_number }</span>")
+					- var file = "/img/pdf.jpg"
 
-							.item-arsip-thumbs(style='background-image: url(/img/arsip/dok-1.png);')
+					- var ext = str.substr(str.length - 3, str.length);
 
-								span.tag pdf
+					.col-md-2.col-xs-6.item-arsip(data-toggle='modal', data-target='#detail-sm', data-id='#{ row.id }', data-title='#{ row.outbox_for }', data-rak='#{ row.rack_number }', data-img='/uploads/outbox/#{ row.outbox_file }', data-ext='#{ ext }')
+
+						a(data-toggle='tooltip', data-placement='top', title="<span class='title-custom'>##{ row.id }</span><span class='title-custom'>Surat dari <b>#{ row.outbox_for }</b></span><span class='title-custom'>Rak #{ row.rack_number }</span>")
+
+							- if ( ext !== "pdf" ) file = "/uploads/outbox/" + row.outbox_file;
+
+							.item-arsip-thumbs(style='background-image: url(#{ file });')
+
+								span.tag #{ ext }
 
 							.item-arsip-name
 
@@ -137,8 +121,7 @@ block content
 
 							- endfor
 
-
-	#detail-sk.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+	#detail-sm.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
 
 		.modal-dialog.modal-lg
 
@@ -152,9 +135,9 @@ block content
 
 					h4.modal-title
 
-						| Surat untuk 
+						| Surat dari #{ ext }
 
-						b#title Modal title
+						b#title
 
 				.modal-body
 
@@ -174,11 +157,12 @@ block content
 
 						b#rak(style='font-size: 18px;')
 
-					br
+						br
+						br
 
-					img#img(src='/img/arsip/dok-1.png', width='100%')
+						img#img(src='', width='100%')
 
-					// <object class="object-circled" width="100%" height="500px" data="/img/arsip/dok-2.pdf#view=FitH" type="application/pdf"></object>
+						iframe#pdf.object-circled(width='100%', height='500px', src='', type='application/pdf')
 
 				.modal-footer
 

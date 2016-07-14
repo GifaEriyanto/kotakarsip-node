@@ -1,0 +1,101 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		include ../layouts/partials/search
+
+		section.container.default-section
+
+			.bread
+
+				a(href='/') Beranda
+
+				i.fa.fa-angle-right
+
+				a(href='/surat-keluar') Surat Keluar
+
+				i.fa.fa-angle-right
+
+				b Lorem ipsum dolor sit
+
+			br
+
+			br
+
+			.row
+
+				- for row in data
+
+					- var str = row.outbox_file
+
+					- var ext = str.substr(str.length - 3, str.length);
+
+					.col-md-6
+
+						- if ( ext === "pdf" ) {
+
+							iframe#pdf.object-circled(width='100%', height='500px', src='/uploads/outbox/#{ row.outbox_file }', type='application/pdf')
+
+						- } else {
+
+							img#img(src='/uploads/outbox/#{ row.outbox_file }', width='100%')
+
+						- }
+
+
+					.col-md-6
+
+						ul.detail-arsip
+
+
+								li
+
+									label ID
+
+									span ##{ row.id }
+
+								li
+
+									label Tanggal Keluar
+
+									span #{ date }
+
+								li
+
+									label Asal Surat
+
+									span #{ row.outbox_for }
+
+								li
+
+									label Nomor Surat
+
+									span #{ row.outbox_number }
+
+								li
+
+									label Perihal
+
+									span #{ row.outbox_title }
+
+								li
+
+									label Rak
+
+									span #{ row.rack_number }
+
+								li
+
+									label Keterangan
+
+									span #{ row.outbox_desc !== '' ? row.outbox_desc : "-" }
+
+				- endfor

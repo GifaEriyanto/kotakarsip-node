@@ -20,7 +20,7 @@ block content
 
 				i.fa.fa-angle-right
 
-				b Surat Masuk
+				b Surat Keluar
 
 				span.display
 
@@ -76,17 +76,15 @@ block content
 
 							th #ID
 
-							th Tanggal Masuk
+							th Tanggal Keluar
 
 							th Nomor Surat
 
-							th Asal Surat
+							th Tujuan Surat
 
 							th Perihal
 
 							th Rak
-
-							th Disposisi
 
 					tbody
 
@@ -98,25 +96,23 @@ block content
 
 						- for row in data
 
-							- var str = row.inbox_file
+							- var str = row.outbox_file
 
 							- var ext = str.substr(str.length - 3, str.length);
 
-							tr(style='cursor: pointer', data-toggle='modal', data-target='#detail-sm', data-id='#{ row.id }', data-title='#{ row.inbox_from }', data-rak='#{ row.rack_number }', data-img='/uploads/inbox/#{ row.inbox_file }', data-ext='#{ ext }')
+							tr(style='cursor: pointer', data-toggle='modal', data-target='#detail-sm', data-id='#{ row.id }', data-title='#{ row.outbox_for }', data-rak='#{ row.rack_number }', data-img='/uploads/outbox/#{ row.outbox_file }', data-ext='#{ ext }')
 
 								td ##{ row.id }
 
-								td #{ row.inbox_date }
+								td #{ row.outbox_date }
 
-								td #{ row.inbox_number }
+								td #{ row.outbox_number }
 
-								td #{ row.inbox_from }
+								td #{ row.outbox_for }
 
-								td #{ row.inbox_title }
+								td #{ row.outbox_title }
 
 								td #{ row.rack_number }
-
-								td Direktur, Sekretaris
 
 						- endfor
 

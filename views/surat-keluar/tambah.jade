@@ -1,0 +1,65 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.default-section
+
+			.headline Tambah Surat Keluar Baru
+
+			form.form-custom.row(action='/surat-keluar/tambah', method='POST', enctype='multipart/form-data')
+
+				.col-md-6
+
+					input(type='hidden', name='id_user', value='2')
+
+					input#defaultActualPicker(type='text', name='outbox_date', style='cursor:pointer', placeholder='Tanggal Keluar', required, autocomplete='off')
+
+					input(type='text', name='outbox_for', placeholder='Asal Surat', required)
+
+					input(type='text', name='outbox_number', placeholder='Nomor Surat', required)
+
+					input(type='text', name='outbox_title', placeholder='Perihal', required)
+
+					select(name='id_rack', placeholder='Rak', required)
+
+						- for row in data_rak
+
+							option(value='#{ row.id }') Rak #{ row.rack_number }
+
+						- endfor
+
+				.col-md-6
+
+					textarea(name='outbox_desc', rows='5', placeholder='Keterangan')
+
+					br
+
+					br
+
+					label(for='') Hasil Scan Surat
+
+					input(type='file', name='outbox_file', placeholder='Gambar', accept='.pdf,.jpg,.png', multiple='', required)
+
+				.col-md-12
+
+					hr
+
+					a.btn-icon.btn-icon-default.pull-right.add-large(href='/surat-keluar')
+
+						i.fa.fa-angle-left
+
+						| Kembali
+
+					button.btn-icon.btn-icon-info.pull-right.add-large(name='insert', value='true')
+
+						i.fa.fa-floppy-o
+
+						| Simpan

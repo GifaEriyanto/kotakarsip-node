@@ -1,0 +1,75 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.default-section
+
+			.headline Sunting Surat Keluar ##{ id }
+
+			form.form-custom.row(action='/surat-keluar/sunting/#{ id }', method='POST', enctype='multipart/form-data')
+
+				.col-md-6
+
+					input(type='hidden', name='id', value='#{ id }')
+
+					input(type='hidden', name='id_user', value='#{ id_user }')
+
+					input#defaultActualPicker(type='text', name='outbox_date', style='cursor:pointer', placeholder='Tanggal Keluar', value='#{ date }', autocomplete='off')
+
+					input(type='text', name='outbox_for', placeholder='Asal Surat', value='#{ outbox_for }', required)
+
+					input(type='text', name='outbox_number', placeholder='Nomor Surat', value='#{ outbox_number }', required)
+
+					input(type='text', name='outbox_title', placeholder='Perihal', value='#{ outbox_title }', required)
+
+					select(name='id_rack', placeholder='Rak', required)
+
+						- for row in data_rak
+
+							- if (row.id === id_rack) { 
+
+								option(value='#{ row.id }', selected) Rak #{ row.rack_number }
+
+							- } else {
+
+								option(value='#{ row.id }') Rak #{ row.rack_number }
+
+							- }
+
+						- endfor
+
+				.col-md-6
+
+					textarea(name='outbox_desc', rows='5', placeholder='Keterangan') #{ outbox_desc }
+
+					br
+
+					br
+
+					label(for='') Hasil Scan Surat
+
+					input(type='file', name='outbox_file', placeholder='Gambar', accept='image/*', multiple='', required)
+
+				.col-md-12
+
+					hr
+
+					a.btn-icon.btn-icon-default.pull-right.add-large(href='surat-keluar.html')
+
+						i.fa.fa-angle-left
+
+						| Kembali
+
+					button.btn-icon.btn-icon-info.pull-right.add-large
+
+						i.fa.fa-floppy-o
+
+						| Simpan

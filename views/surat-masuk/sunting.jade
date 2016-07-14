@@ -18,9 +18,11 @@ block content
 
 				.col-md-6
 
+					input(type='hidden', name='id', value='#{ id }')
+
 					input(type='hidden', name='id_user', value='#{ id_user }')
 
-					input#defaultActualPicker(type='text', name='inbox_date', style='cursor:pointer', placeholder='Tanggal Masuk', value='#{ inbox_date }', autocomplete='off')
+					input#defaultActualPicker(type='text', name='inbox_date', style='cursor:pointer', placeholder='Tanggal Masuk', value='#{ date }', autocomplete='off')
 
 					input(type='text', name='inbox_from', placeholder='Asal Surat', value='#{ inbox_from }', required)
 

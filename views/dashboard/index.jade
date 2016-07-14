@@ -10,31 +10,7 @@ block content
 
 	#body
 
-		section.container.main-section
-
-			form.form-custom.row(action='')
-
-				.col-md-2
-
-					select.testsel(name='rak', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
-
-						- for row in data_rak
-
-							option(value='#{ row.rack_number }') Rak #{ row.rack_number }
-
-						- endfor
-
-				.col-md-4
-
-					input#rangePicker(type='text', placeholder='Rentang Waktu', readonly='')
-
-				.col-md-6
-
-					input(type='text', placeholder='Pencarian')
-
-					button.btn-search
-
-						i.fa.fa-search
+		include ../layouts/partials/search
 
 		section.container
 
@@ -153,7 +129,7 @@ block content
 
 					- var ext = str.substr(str.length - 3, str.length);
 
-					.col-md-2.col-xs-6.item-arsip(data-toggle='modal', data-target='#detail-sm', data-id='#{ row.id }', data-title='#{ row.outbox_for }', data-rak='#{ row.rack_number }', data-img='/uploads/outbox/#{ row.outbox_file }', data-ext='#{ ext }')
+					.col-md-2.col-xs-6.item-arsip(data-toggle='modal', data-target='#detail-sk', data-id='#{ row.id }', data-title='#{ row.outbox_for }', data-rak='#{ row.rack_number }', data-img='/uploads/outbox/#{ row.outbox_file }', data-ext='#{ ext }')
 
 						a(data-toggle='tooltip', data-placement='top', title="<span class='title-custom'>##{ row.id }</span><span class='title-custom'>Surat dari <b>#{ row.outbox_for }</b></span><span class='title-custom'>Rak #{ row.rack_number }</span>")
 
@@ -165,7 +141,7 @@ block content
 
 							.item-arsip-name
 
-								.ellipsis ##{ row.id } #{ row.outbox_from }
+								.ellipsis ##{ row.id } #{ row.outbox_for }
 
 				- endfor
 
