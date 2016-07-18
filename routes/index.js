@@ -560,10 +560,45 @@ router
 			connection.query("DELETE FROM app_" + init + " WHERE id=" + req.body.id, function (err, rows, field) {
 				if (err) throw err;
 			})
+
 		} else if (init === 'master_users') {
 			connection.query("DELETE FROM app_users WHERE id=" + req.body.id, function (err, rows, field) {
 				if (err) throw err;
 			})
+
+		} else if (init === 'edit_disposition') {
+			var post = {
+				id : req.body.id,
+				disposition_name : req.body.disposition_name,
+				disposition_position : req.body.disposition_position
+			}
+
+			connection.query('UPDATE app_master_disposition SET disposition_name = ?, disposition_position = ? WHERE id = ?', [post.disposition_name, post.disposition_position, post.id], function(err, result) {
+				if (err) throw err;
+			});
+
+		} else if (init === 'edit_users') {
+			var post = {
+				id : req.body.id,
+				user_login : req.body.user_login,
+				user_displayname : req.body.user_displayname,
+				user_email : req.body.user_email,
+				user_pass : req.body.user_pass,
+			}
+
+			connection.query('UPDATE app_users SET user_login = ?, user_displayname = ?, user_email = ?, user_pass = ? WHERE id = ?', [post.user_login, post.user_displayname, post.user_email, post.user_pass, post.id], function(err, result) {
+				if (err) throw err;
+			});
+			
+		} else if (init === 'edit_rack') {
+			var post = {
+				id : req.body.id,
+				rack_number : req.body.rack_number,
+			}
+
+			connection.query('UPDATE app_master_rack SET rack_number = ? WHERE id = ?', [post.rack_number, post.id], function(err, result) {
+				if (err) throw err;
+			});
 		}
 		
 		res.redirect('/master');

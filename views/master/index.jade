@@ -16,7 +16,7 @@ block content
 
 				.headline Disposisi
 
-				form.form-custom(action='/master', method='POST')
+				form.form-custom(action='/master', method='POST', id='disposition')
 
 					.col-md-12
 
@@ -58,7 +58,7 @@ block content
 
 										td
 
-											a.btn-aksi(href='', title='Sunting')
+											a.btn-aksi(href='#', title='Sunting', data-toggle='modal', data-target='#edit-modal', data-init='edit_disposition', data-id='#{ row.id }')
 
 												i.fa.fa-pencil
 
@@ -84,7 +84,7 @@ block content
 
 						i Kata sandi default: 12345
 
-				form.form-custom(action='/master', method='POST')
+				form.form-custom(action='/master', method='POST', id='users')
 
 					.col-md-6
 
@@ -134,9 +134,11 @@ block content
 
 										td #{ row.user_email }
 
+										td.hidden #{ row.user_pass }
+
 										td
 
-											a.btn-aksi(href='', title='Sunting')
+											a.btn-aksi(href='#', title='Sunting', data-toggle='modal', data-target='#edit-modal', data-init='edit_users', data-id='#{ row.id }')
 
 												i.fa.fa-pencil
 
@@ -158,7 +160,7 @@ block content
 
 					.headline Penyimpanan Fisik
 
-					form.form-custom(action='/master', method='POST')
+					form.form-custom(action='/master', method='POST', id='rack')
 
 						.col-md-12
 
@@ -194,7 +196,7 @@ block content
 
 											td
 
-												a.btn-aksi(href='', title='Sunting')
+												a.btn-aksi(href='#', title='Sunting', data-toggle='modal', data-target='#edit-modal', data-init='edit_rack', data-id='#{ row.id }')
 
 													i.fa.fa-pencil
 
@@ -226,7 +228,7 @@ block content
 
 					.modal-footer
 
-						form(action="/master", method="POST")
+						form(action="/master", method="POST", id="hapus")
 
 							input(type="hidden", name="init", value="")
 							input(type="hidden", name="id", value="")
@@ -234,6 +236,36 @@ block content
 							button.btn.btn-danger(name="delete", value="true") Ya
 
 							button.btn.btn-default(type='button', data-dismiss='modal') Tidak
+
+
+
+
+		#edit-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+
+			.modal-dialog
+
+				.modal-content
+
+					.modal-header
+
+						button.close(type='button', data-dismiss='modal', aria-label='Close')
+
+							span(aria-hidden='true') ×
+
+						h4#title.modal-title Sunting
+
+					form(action="/master", method="POST", id="edit", class="form-custom")
+
+						.modal-body
+
+						.modal-footer
+
+							input(type="hidden", name="init", value="")
+							input(type="hidden", name="id", value="")
+
+							button.btn.btn-success(name="edit", value="true") Simpan Perubahan
+
+							button.btn.btn-default(type='button', data-dismiss='modal') Kembali
 
 block script
 
@@ -244,6 +276,33 @@ block script
 		$(".btn-aksi").click(function () {
 			var init = $(this).data('init');
 			var id = $(this).data('id');
-			$('.modal input[name="init"]').val(init);
-			$('.modal input[name="id"]').val(id);
+			$('#hapus-modal input[name="init"]').val(init);
+			$('#hapus-modal input[name="id"]').val(id);
 		});
+
+		$('a.btn-aksi[title="Sunting"]').click(function () {
+			var init = $(this).data('init');
+			var id = $(this).data('id');
+			$('#edit-modal input[name="init"]').val(init);
+			$('#edit-modal input[name="id"]').val(id);
+			$('.modal-body').html("");
+
+			if (init === "edit_disposition") {
+				var disposition_name = $(this).parent().parent().find('td:nth-child(2)').text();
+				var disposition_position = $(this).parent().parent().find('td:nth-child(3)').text();
+				$(".modal-body").append('<label>Disposisi Kepada:</label><input type="text" name="disposition_name" value="' + disposition_name + '">');
+				$(".modal-body").append('<label>Jabatan</label><input type="text" name="disposition_position" value="' + disposition_position + '">');
+			} else if (init === "edit_users") {
+				var user_displayname = $(this).parent().parent().find('td:nth-child(2)').text();
+				var user_login = $(this).parent().parent().find('td:nth-child(3)').text();
+				var user_email = $(this).parent().parent().find('td:nth-child(4)').text();
+				var user_pass = $(this).parent().parent().find('td:nth-child(5)').text();
+				$(".modal-body").append('<label>Nama Lengkap</label><input type="text" name="user_displayname" value="' + user_displayname + '">');
+				$(".modal-body").append('<label>Nama Pengguna</label><input type="text" name="user_login" value="' + user_login + '">');
+				$(".modal-body").append('<label>Alamat Email</label><input type="text" name="user_email" value="' + user_email + '">');
+				$(".modal-body").append('<label>Kata Sandi</label><input type="password" name="user_pass" value="' + user_pass + '">');
+			} else if (init === "edit_rack") {
+				var rack_number = $(this).parent().parent().find('td:nth-child(2)').text();
+				$(".modal-body").append('<label>Rak</label><input type="text" name="rack_number" value="' + rack_number + '">');
+			}
+		})
