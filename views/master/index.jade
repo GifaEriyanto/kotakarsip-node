@@ -20,11 +20,11 @@ block content
 
 					.col-md-12
 
-						input(type='hidden', name='init', value='disposition')
+						input(type='hidden', name='init', value='disposition', required)
 
-						input(type='text', name='disposition_name', placeholder='Disposisi Kepada:')
+						input(type='text', name='disposition_name', placeholder='Disposisi Kepada:', required)
 
-						input(type='text', name='disposition_position', placeholder='Jabatan')
+						input(type='text', name='disposition_position', placeholder='Jabatan', required)
 
 						button.btn-plus(title='Tambah')
 
@@ -78,25 +78,21 @@ block content
 
 				.headline
 
-					| Administrator 
-
-					small(style='font-weight: normal; color: #999')
-
-						i Kata sandi default: 12345
+					| Administrator
 
 				form.form-custom(action='/master', method='POST', id='users')
 
 					.col-md-6
 
-						input(type='hidden', name='init', value='users')
+						input(type='hidden', name='init', value='users', required)
 
-						input(type='text', name='user_displayname', placeholder='Nama Lengkap')
+						input(type='text', name='user_displayname', placeholder='Nama Lengkap', required)
 
-						input(type='text', name='user_login', placeholder='Nama Pengguna')
+						input(type='text', name='user_login', placeholder='Nama Pengguna', required)
 
-						input(type='email', name='user_email', placeholder='Alamat Email')
+						input(type='email', name='user_email', placeholder='Alamat Email', required)
 
-						input(type='password', name='user_pass', placeholder='Kata Sandi')
+						input(type='password', name='user_pass', placeholder='Kata Sandi', required)
 
 						button.btn-plus(title='Tambah')
 
@@ -164,9 +160,9 @@ block content
 
 						.col-md-12
 
-							input(type='hidden', name='init', value='rack')
+							input(type='hidden', name='init', value='rack', required)
 
-							input(type='text', name='rack_number', placeholder='Rak')
+							input(type='text', name='rack_number', placeholder='Rak', required)
 
 							button.btn-plus(title='Tambah')
 
@@ -285,24 +281,24 @@ block script
 			var id = $(this).data('id');
 			$('#edit-modal input[name="init"]').val(init);
 			$('#edit-modal input[name="id"]').val(id);
-			$('.modal-body').html("");
+			$('#edit-modal .modal-body').html("");
 
 			if (init === "edit_disposition") {
 				var disposition_name = $(this).parent().parent().find('td:nth-child(2)').text();
 				var disposition_position = $(this).parent().parent().find('td:nth-child(3)').text();
-				$(".modal-body").append('<label>Disposisi Kepada:</label><input type="text" name="disposition_name" value="' + disposition_name + '">');
-				$(".modal-body").append('<label>Jabatan</label><input type="text" name="disposition_position" value="' + disposition_position + '">');
+				$("#edit-modal .modal-body").append('<label>Disposisi Kepada:</label><input type="text" name="disposition_name" value="' + disposition_name + '">');
+				$("#edit-modal .modal-body").append('<label>Jabatan</label><input type="text" name="disposition_position" value="' + disposition_position + '">');
 			} else if (init === "edit_users") {
 				var user_displayname = $(this).parent().parent().find('td:nth-child(2)').text();
 				var user_login = $(this).parent().parent().find('td:nth-child(3)').text();
 				var user_email = $(this).parent().parent().find('td:nth-child(4)').text();
 				var user_pass = $(this).parent().parent().find('td:nth-child(5)').text();
-				$(".modal-body").append('<label>Nama Lengkap</label><input type="text" name="user_displayname" value="' + user_displayname + '">');
-				$(".modal-body").append('<label>Nama Pengguna</label><input type="text" name="user_login" value="' + user_login + '">');
-				$(".modal-body").append('<label>Alamat Email</label><input type="text" name="user_email" value="' + user_email + '">');
-				$(".modal-body").append('<label>Kata Sandi</label><input type="password" name="user_pass" value="' + user_pass + '">');
+				$("#edit-modal .modal-body").append('<label>Nama Lengkap</label><input type="text" name="user_displayname" value="' + user_displayname + '">');
+				$("#edit-modal .modal-body").append('<label>Nama Pengguna</label><input type="text" name="user_login" value="' + user_login + '">');
+				$("#edit-modal .modal-body").append('<label>Alamat Email</label><input type="text" name="user_email" value="' + user_email + '">');
+				$("#edit-modal .modal-body").append('<label>Kata Sandi</label><input type="password" name="user_pass" value="' + user_pass + '">');
 			} else if (init === "edit_rack") {
 				var rack_number = $(this).parent().parent().find('td:nth-child(2)').text();
-				$(".modal-body").append('<label>Rak</label><input type="text" name="rack_number" value="' + rack_number + '">');
+				$("#edit-modal .modal-body").append('<label>Rak</label><input type="text" name="rack_number" value="' + rack_number + '">');
 			}
 		})
