@@ -96,6 +96,8 @@ block content
 								font-size: 12px;
 							}
 
+						- var i = 0
+
 						- for row in data
 
 							- var str = row.inbox_file
@@ -106,7 +108,7 @@ block content
 
 								td ##{ row.id }
 
-								td #{ row.inbox_date }
+								td #{ date(i) }
 
 								td #{ row.inbox_number }
 
@@ -117,6 +119,8 @@ block content
 								td #{ row.rack_number }
 
 								td Direktur, Sekretaris
+
+							- i += 1
 
 						- endfor
 

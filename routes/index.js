@@ -152,6 +152,9 @@ router.get('/surat-masuk/list', function (req, res, next) {
 			menuActive : "/surat-masuk",
 			data : rows,
 			data_rak : data_rak,
+			date : function (i) {
+				return moment(rows[i].inbox_date).format('DD-MM-YYYY')
+			},
 			pages : paginator._result.range,
 			pageActive : paginator._result.current
 		})
@@ -253,6 +256,7 @@ router.get('/surat-masuk/detail/:id', function (req, res, next) {
 			id : req.params.id,
 			data : rows,
 			data_rak : data_rak,
+			title : rows[0].inbox_title,
 			inbox_disposition : JSON.parse(dis),
 			data_disposisi : data_disposisi,
 			date : moment(rows[0].inbox_date).format('DD-MM-YYYY')
@@ -358,6 +362,9 @@ router.get('/surat-keluar/list', function (req, res, next) {
 			menuActive : "/surat-keluar",
 			data : rows,
 			data_rak : data_rak,
+			date : function (i) {
+				return moment(rows[i].inbox_date).format('DD-MM-YYYY')
+			},
 			pages : paginator._result.range,
 			pageActive : paginator._result.current
 		})
@@ -451,6 +458,7 @@ router.get('/surat-keluar/detail/:id', function (req, res, next) {
 			menuActive : "/surat-keluar",
 			id : req.params.id,
 			data : rows,
+			title : rows[0].outbox_title,
 			data_rak : data_rak,
 			date : moment(rows[0].outbox_date).format('DD-MM-YYYY')
 		})

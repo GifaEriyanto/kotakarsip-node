@@ -94,6 +94,8 @@ block content
 								font-size: 12px;
 							}
 
+						- var i = 0
+
 						- for row in data
 
 							- var str = row.outbox_file
@@ -104,7 +106,7 @@ block content
 
 								td ##{ row.id }
 
-								td #{ row.outbox_date }
+								td #{ date(i) }
 
 								td #{ row.outbox_number }
 
@@ -113,6 +115,8 @@ block content
 								td #{ row.outbox_title }
 
 								td #{ row.rack_number }
+
+							- i += 1
 
 						- endfor
 
