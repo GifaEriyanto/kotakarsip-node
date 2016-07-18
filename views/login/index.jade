@@ -10,31 +10,19 @@ html(lang='en')
 
 		meta(name='author', content='')
 
-		meta(property='og:image', content='/assets/img/logo.svg')
+		meta(property='og:image', content='/img/logo.svg')
 
 		meta(charset='UTF-8')
 
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 
-		title Kotakarsip
+		title #{ title }
 
-		link(rel='icon', sizes='16x16', href='/assets/img/favicon.png')
-
-		link(rel='stylesheet', href='/assets/libs/font-icons/entypo/css/entypo.css')
-
-		link(rel='stylesheet', href='/assets/libs/font-icons/font-awesome/css/font-awesome.min.css')
+		link(rel='icon', sizes='16x16', href='/img/favicon.png')
 
 		link(href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,700,300,600,800,400', rel='stylesheet', type='text/css')
 
-		link(rel='stylesheet', href='/assets/libs/jquery-ui/jquery-ui.css')
-
-		link(href='/assets/libs/sumoselect/sumoselect.css', rel='stylesheet')
-
-		link(href='/assets/libs/bootstrap-switch-master/dist/css/bootstrap3/bootstrap-switch.css', rel='stylesheet')
-
-		link(rel='stylesheet', type='text/css', href='/assets/libs/datepick/jquery.datepick.css')
-
-		link(href='/assets/css/kotakarsip.css', rel='stylesheet')
+		link(href='/css/kotakarsip.css', rel='stylesheet')
 
 		style.
 
@@ -124,29 +112,26 @@ html(lang='en')
 
 							a(href='/')
 
-								img(src='/assets/img/logo.svg', alt='', width='26px')
+								img(src='/img/logo.svg', alt='', width='26px')
 
-								b KOTAK ARSIP
+								b KOTAK ARSIP  #{ message }
 
 			.nav(style='padding-bottom: 0; padding-top: 0; height: calc(100vh - 160px); background: #3498db')
 
 				.form
 
-					form(action='/')
+					form(action='', method='POST')
 
 						.form-group
 
-							input(type='text', placeholder='Username')
+							input(type='text', name='username', placeholder='Username')
 
 						.form-group
 
-							input(type='password', placeholder='Password')
+							input(type='password', name='password', placeholder='Password')
 
 						.form-group
 
 							button Login
 
-		script(src='/assets/js/kotakarsip.js')
-
-		script(src='/assets/js/scrolltobyspeed.jquery.js')
-
+		script(src='/js/kotakarsip.js')

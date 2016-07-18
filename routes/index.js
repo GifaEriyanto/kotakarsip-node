@@ -484,4 +484,82 @@ router.get('/surat-keluar/hapus/:id', function (req, res, next) {
 	})
 })
 
+
+
+// Get Master Page
+router
+	.get('/master', function(req, res, next) {
+
+		// Path
+		var currentPage = req.path;
+
+		var query = [	
+			"SELECT * FROM app_master_rack",
+			"SELECT * FROM app_master_disposition",
+			"SELECT * FROM app_users"
+		]
+		
+		connection.query(query.join(";"), function (err, results) {
+			if (err) throw err;
+
+			res.render('./master/index', {
+				title : "Master Data",
+				path : variable.nav,
+				currentPage : currentPage,
+				menuActive : "/master",
+				data_rack : results[0],
+				data_disposition : results[1],
+				data_users : results[2]
+			})
+		})
+	})
+	.post('/master', function(req, res) {
+
+		var init = req.body.init;
+		var del = req.body.delete;
+		if (init === 'rack') {
+			var post = {
+				rack_number : req.body.rack_number
+			}
+
+			connection.query('INSERT INTO app_master_rack SET ?', post, function(err, result) {
+				if (err) throw err;
+			});
+
+		} else if (init === 'disposition') {
+			var post = {
+				disposition_name : req.body.disposition_name,
+				disposition_position : req.body.disposition_position
+			}
+
+			connection.query('INSERT INTO app_master_disposition SET ?', post, function(err, result) {
+				if (err) throw err;
+			});
+
+		} else if (init === 'users') {
+			var post = {
+				user_login : req.body.user_login,
+				user_pass : req.body.user_pass,
+				user_displayname : req.body.user_displayname,
+				user_email : req.body.user_email
+			}
+
+			connection.query('INSERT INTO app_users SET ?', post, function(err, result) {
+				if (err) throw err;
+			});
+
+		} else if (init === 'master_rack' || init === 'master_disposition') {
+			connection.query("DELETE FROM app_" + init + " WHERE id=" + req.body.id, function (err, rows, field) {
+				if (err) throw err;
+			})
+		} else if (init === 'master_users') {
+			connection.query("DELETE FROM app_users WHERE id=" + req.body.id, function (err, rows, field) {
+				if (err) throw err;
+			})
+		}
+		
+		res.redirect('/master');
+
+	});
+
 module.exports = router;
