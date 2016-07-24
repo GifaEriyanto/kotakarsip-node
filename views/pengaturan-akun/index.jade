@@ -1,0 +1,62 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.default-section
+
+			.headline Pengaturan Akun
+
+			form.form-custom.row(action='/pengaturan-akun', method='POST')
+
+				.col-md-6
+
+					input(type='hidden', name='id', value='#{ data[0].id }', required)
+
+					input(type='text', id='username', name='user_login', placeholder='Nama Pengguna', value='#{ data[0].user_login }', required)
+
+					input(type='text', name='user_displayname', placeholder='Nama Tampilan', value='#{ data[0].user_displayname }', required)
+
+					input(type='email', name='user_email', placeholder='Email', value='#{ data[0].user_email }', required)
+
+					br
+					br
+
+					label(for="") Ganti Kata Sandi
+
+					input(type='password', name='user_pass', placeholder='Kata Sandi Baru')
+
+				.clearfix
+
+
+				.col-md-6
+
+					hr
+
+					a.btn-icon.btn-icon-default.pull-right.add-large(href='/')
+
+						i.fa.fa-angle-left
+
+						| Kembali
+
+					button.btn-icon.btn-icon-info.pull-right.add-large(name='insert', value='true')
+
+						i.fa.fa-floppy-o
+
+						| Simpan
+
+block script
+
+	script.
+
+		$('#username').on('keypress', function(e) {
+			if (e.which == 32)
+			return false;
+		});

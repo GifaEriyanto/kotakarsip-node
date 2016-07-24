@@ -1,0 +1,270 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.main-section
+
+			form#search.form-custom.row(action='/search', method='get')
+
+				.col-md-2
+
+					select(name='type', placeholder='Jenis Surat')
+
+						- var arr = ['inbox', 'outbox']
+						- var label = ['Masuk', 'Keluar']
+
+						- for (var i = 0; i < arr.length; i++) {
+
+							- if (arr[i] === type) {
+
+								option(value='#{ arr[i] }', selected) Surat #{ label[i] }
+
+							- } else {
+
+								option(value='#{ arr[i] }') Surat #{ label[i] }
+
+							- }
+
+						- }
+
+				.col-md-2
+
+					select.testsel(name='rack', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
+
+						- for row in data_rak
+
+							- var select = "";
+
+							- if (typeof rack !== "undefined") {
+
+								- for (var i = 0; i < rack.length; i++) {
+
+									- if (Number(rack[i]) === row.id) { select = "true"; break; } else { select = "false" }
+
+								- }
+
+								- if ( select === "true" ) {
+
+									option(value='#{ row.id }', selected) Rak #{ row.rack_number }
+
+								- } else {
+
+									option(value='#{ row.id }') Rak #{ row.rack_number }
+
+								- }
+
+							- } else {
+
+								option(value='#{ row.id }') Rak #{ row.rack_number }
+
+							- }
+
+						- endfor
+
+				.col-md-3
+
+					input#rangePicker(type='text', name='daterange', placeholder='Rentang Waktu', readonly='', value='#{ daterange }')
+
+				.col-md-5
+
+					input(type='text', name='q', placeholder='Pencarian', value='#{ q }')
+
+					button.btn-search
+
+						i.fa.fa-search
+
+		section.container.default-section
+
+			- if (type === "inbox") {
+
+				.headline Surat Masuk
+
+			- } else {
+
+				.headline Surat Keluar
+
+			- }
+
+
+			.row
+
+				- for row in data
+
+					- if (type === "inbox") {
+
+						- var str = row.inbox_file
+
+						- var file = "/img/pdf.jpg"
+
+						- var ext = str.substr(str.length - 3, str.length);
+
+						.col-md-2.col-xs-6.item-arsip(data-toggle='modal', data-target='#detail-sm', data-id='#{ row.id }', data-title='#{ row.inbox_from }', data-rak='#{ row.rack_number }', data-img='/uploads/inbox/#{ row.inbox_file }', data-ext='#{ ext }')
+
+							a(data-toggle='tooltip', data-placement='top', title="<span class='title-custom'>##{ row.id }</span><span class='title-custom'>Surat dari <b>#{ row.inbox_from }</b></span><span class='title-custom'>Rak #{ row.rack_number }</span>")
+
+								- if ( ext !== "pdf" ) file = "/uploads/inbox/" + row.inbox_file;
+
+								.item-arsip-thumbs(style='background-image: url(#{ file });')
+
+									span.tag #{ ext }
+
+								.item-arsip-name
+
+									.ellipsis ##{ row.id } #{ row.inbox_from }
+
+					- } else {
+
+						- var str = row.outbox_file
+
+						- var file = "/img/pdf.jpg"
+
+						- var ext = str.substr(str.length - 3, str.length);
+
+						.col-md-2.col-xs-6.item-arsip(data-toggle='modal', data-target='#detail-sk', data-id='#{ row.id }', data-title='#{ row.outbox_for }', data-rak='#{ row.rack_number }', data-img='/uploads/outbox/#{ row.outbox_file }', data-ext='#{ ext }')
+
+							a(data-toggle='tooltip', data-placement='top', title="<span class='title-custom'>##{ row.id }</span><span class='title-custom'>Surat dari <b>#{ row.outbox_for }</b></span><span class='title-custom'>Rak #{ row.rack_number }</span>")
+
+								- if ( ext !== "pdf" ) file = "/uploads/outbox/" + row.outbox_file;
+
+								.item-arsip-thumbs(style='background-image: url(#{ file });')
+
+									span.tag #{ ext }
+
+								.item-arsip-name
+
+									.ellipsis ##{ row.id } #{ row.outbox_for }
+
+					- }
+
+				- endfor
+
+				- if (data.length < 1) {
+
+					.col-md-12.empty
+
+						img(src='/img/not_found.png', width='80px')
+
+						br
+						br
+
+						|  Belum ada Surat Masuk
+
+				- }
+
+				- if (pages.length > 1)
+
+					- for page in pages
+
+						li
+
+							a(href='#{ currentPage }?page=#{ page }', class="#{ pageActive == page ? 'actived' : '' }") #{ page }
+
+					- endfor
+
+	#detail-sm.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+
+		.modal-dialog.modal-lg
+
+			.modal-content
+
+				.modal-header
+
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+
+						span(aria-hidden='true') ×
+
+					h4.modal-title
+
+						| Surat dari 
+
+						b#title Modal title
+
+				.modal-body
+
+					br
+
+					center
+
+						b
+							| #
+							span#id(style='font-size: 18px;')
+
+						br
+
+						b Tempat Penyimpanan
+
+						|  : Rak 
+
+						b#rak(style='font-size: 18px;')
+
+					br
+
+					img#img(src='/img/arsip/dok-1.png', width='100%')
+
+					// <object class="object-circled" width="100%" height="500px" data="/img/arsip/dok-2.pdf#view=FitH" type="application/pdf"></object>
+
+				.modal-footer
+
+					a.btn.btn-warning.pull-left(data-url='surat-masuk/sunting') Sunting
+
+					a.btn.btn-danger.pull-left(data-url='surat-masuk/hapus') Hapus
+
+					a.btn.btn-primary(data-url='surat-masuk/detail') Selengkapnya
+
+	#detail-sk.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+
+		.modal-dialog.modal-lg
+
+			.modal-content
+
+				.modal-header
+
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+
+						span(aria-hidden='true') ×
+
+					h4.modal-title
+
+						| Surat untuk 
+
+						b#title Modal title
+
+				.modal-body
+
+					br
+
+					center
+
+						b
+							| #
+							span#id(style='font-size: 18px;')
+
+						br
+
+						b Tempat Penyimpanan
+
+						|  : Rak 
+
+						b#rak(style='font-size: 18px;')
+
+					br
+
+					img#img(src='/img/arsip/dok-1.png', width='100%')
+
+					// <object class="object-circled" width="100%" height="500px" data="/img/arsip/dok-2.pdf#view=FitH" type="application/pdf"></object>
+
+				.modal-footer
+
+					a.btn.btn-warning.pull-left(data-url='surat-keluar/sunting') Sunting
+
+					a.btn.btn-danger.pull-left(data-url='surat-keluar/hapus') Hapus
+
+					a.btn.btn-primary(data-url='surat-keluar/detail') Selengkapnya

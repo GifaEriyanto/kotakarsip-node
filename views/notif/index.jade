@@ -1,0 +1,48 @@
+extends ../layouts/layout
+
+
+block title
+
+	|	#{ title }
+
+
+block content
+
+	#body
+
+		section.container.default-section
+
+			.headline Pemberitahuan
+
+			ul.pemberitahuan
+
+				- for row in data
+
+					- var status = "";
+
+					- if (row.status == 1) { status = "new" }
+
+						-var url = "";
+
+						- if (row.notification_kind === "inbox") {url = "surat-masuk"}
+						- else if (row.notification_kind === "outbox") {url = "surat-keluar"}
+
+						li(class='#{ status }')
+
+							a(href='/#{ url }/detail/#{ row.id_content }')
+
+								i.fa.fa-file-text
+
+									- var type = "";
+									- var kind = "";
+
+									- if (row.notification_type === "create") {type = "telah membuat"}
+									- else if (row.notification_type === "update") {type = "telah memperbarui"}
+									- else if (row.notification_type === "create") {type = "telah menghapus"}
+
+									- if (row.notification_kind === "inbox") {kind = "surat masuk"}
+									- else if (row.notification_kind === "outbox") {kind = "surat keluar"}
+
+								|   #{ row.user_displayname } #{ type } #{ kind } ##{ row.id_content }
+
+				- endfor

@@ -88,7 +88,7 @@ block content
 
 						input(type='text', name='user_displayname', placeholder='Nama Lengkap', required)
 
-						input(type='text', name='user_login', placeholder='Nama Pengguna', required)
+						input(type='text', name='user_login', class="username", placeholder='Nama Pengguna', required)
 
 						input(type='email', name='user_email', placeholder='Alamat Email', required)
 
@@ -294,11 +294,20 @@ block script
 				var user_email = $(this).parent().parent().find('td:nth-child(4)').text();
 				var user_pass = $(this).parent().parent().find('td:nth-child(5)').text();
 				$("#edit-modal .modal-body").append('<label>Nama Lengkap</label><input type="text" name="user_displayname" value="' + user_displayname + '">');
-				$("#edit-modal .modal-body").append('<label>Nama Pengguna</label><input type="text" name="user_login" value="' + user_login + '">');
+				$("#edit-modal .modal-body").append('<label>Nama Pengguna</label><input type="text" name="user_login" class="username" value="' + user_login + '">');
 				$("#edit-modal .modal-body").append('<label>Alamat Email</label><input type="text" name="user_email" value="' + user_email + '">');
-				$("#edit-modal .modal-body").append('<label>Kata Sandi</label><input type="password" name="user_pass" value="' + user_pass + '">');
+				$("#edit-modal .modal-body").append('<label>Kata Sandi</label><input type="password" name="user_pass" value="" placeholder="Kata Sandi Baru">');
+				$('.username').on('keypress', function(e) {
+					if (e.which == 32)
+					return false;
+				});
 			} else if (init === "edit_rack") {
 				var rack_number = $(this).parent().parent().find('td:nth-child(2)').text();
 				$("#edit-modal .modal-body").append('<label>Rak</label><input type="text" name="rack_number" value="' + rack_number + '">');
 			}
 		})
+
+		$('.username').on('keypress', function(e) {
+			if (e.which == 32)
+			return false;
+		});

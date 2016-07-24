@@ -1,24 +1,32 @@
 section.container.main-section
 
-	form.form-custom.row(action='')
+	form#search.form-custom.row(action='/search', method='get')
 
 		.col-md-2
 
-			select.testsel(name='rak', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
+			select(name='type', placeholder='Jenis Surat')
+
+				option(value='inbox') Surat Masuk
+
+				option(value='outbox') Surat Keluar
+
+		.col-md-2
+
+			select.testsel(name='rack', multiple='multiple', placeholder='Pilih Rak', onchange="console.log($(this).children(':selected').length)")
 
 				- for row in data_rak
 
-					option(value='#{ row.rack_number }') Rak #{ row.rack_number }
+					option(value='#{ row.id }') Rak #{ row.rack_number }
 
 				- endfor
 
-		.col-md-4
+		.col-md-3
 
-			input#rangePicker(type='text', placeholder='Rentang Waktu', readonly='')
+			input#rangePicker(type='text', name='daterange', placeholder='Rentang Waktu', readonly='')
 
-		.col-md-6
+		.col-md-5
 
-			input(type='text', placeholder='Pencarian')
+			input(type='text', name='q', placeholder='Pencarian')
 
 			button.btn-search
 
