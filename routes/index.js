@@ -208,6 +208,7 @@ router
 		})
 	})
 	.post('/surat-masuk/tambah', upload_inbox.single('inbox_file'), function(req, res) {
+
 		var post = {
 			id_user : req.body.id_user,
 			id_rack : req.body.id_rack,
@@ -265,8 +266,11 @@ router
 			inbox_number : req.body.inbox_number,
 			inbox_title : req.body.inbox_title,
 			inbox_desc : req.body.inbox_desc,
-			inbox_disposition : req.body.inbox_disposition.toString(),
-			// inbox_file : req.body.inbox_file
+			inbox_disposition : req.body.inbox_disposition.toString()
+		}
+		
+		if (typeof req.file !== "undefined") {
+			connection.query('UPDATE app_inbox SET inbox_file = ? WHERE id = ?', [req.file.filename, post.id]);
 		}
 
 		connection.query('UPDATE app_inbox SET id_user = ?, id_rack = ?, inbox_date = ?, inbox_from = ?, inbox_number = ?, inbox_title = ?, inbox_desc = ?, inbox_disposition = ? WHERE id = ?', [post.id_user, post.id_rack, post.inbox_date, post.inbox_from, post.inbox_number, post.inbox_title, post.inbox_desc, post.inbox_disposition, post.id], function(err, result) {
@@ -485,7 +489,10 @@ router
 			outbox_number : req.body.outbox_number,
 			outbox_title : req.body.outbox_title,
 			outbox_desc : req.body.outbox_desc
-			// outbox_file : req.body.outbox_file
+		}
+
+		if (typeof req.file !== "undefined") {
+			connection.query('UPDATE app_outbox SET outbox_file = ? WHERE id = ?', [req.file.filename, post.id]);
 		}
 
 		connection.query('UPDATE app_outbox SET id_user = ?, id_rack = ?, outbox_date = ?, outbox_for = ?, outbox_number = ?, outbox_title = ?, outbox_desc = ? WHERE id = ?', [post.id_user, post.id_rack, post.outbox_date, post.outbox_for, post.outbox_number, post.outbox_title, post.outbox_desc, post.id], function(err, result) {
