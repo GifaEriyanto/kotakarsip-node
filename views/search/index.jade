@@ -159,16 +159,6 @@ block content
 
 				- }
 
-				- if (pages.length > 1)
-
-					- for page in pages
-
-						li
-
-							a(href='#{ currentPage }?page=#{ page }', class="#{ pageActive == page ? 'actived' : '' }") #{ page }
-
-					- endfor
-
 	#detail-sm.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
 
 		.modal-dialog.modal-lg
