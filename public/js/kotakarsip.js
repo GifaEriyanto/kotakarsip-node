@@ -33890,6 +33890,10 @@ function detailSurat (e) {
 
 // Function Active
 detailSurat('#detail-sm, #detail-sk');
+
+$(".alert-custom").mouseover(function(event) {
+	$(this).fadeOut()
+});
 // Background
 
 var bg = document.getElementsByClassName('bg');

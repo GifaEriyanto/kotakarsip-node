@@ -15,3 +15,9 @@ footer.container
 script(src='/js/kotakarsip.js')
 
 script(src='/js/scrolltobyspeed.jquery.js')
+
+script.
+
+	setInterval(function () {
+		$('#notif').load('/notifikasi/data');
+	}, 5000);
