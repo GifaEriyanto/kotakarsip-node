@@ -56,11 +56,15 @@ passport.use('login', new LocalStrategy({
 
 
 passport.serializeUser(function(user, done) {
-	done(null, user[0].user_login);
+	done(null, {
+		user_id : user[0].id,
+		user_login : user[0].user_login,
+		user_displayname : user[0].user_displayname,
+	});
 });
  
 passport.deserializeUser(function(id, done) {
-	connection.query("SELECT * FROM app_users WHERE id='" + id[0].id + "'", function (err, user) {
+	connection.query("SELECT * FROM app_users WHERE id='" + id.user_id + "'", function (err, user) {
 		done(err, user);
 	});
 });
