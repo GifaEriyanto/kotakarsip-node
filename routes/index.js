@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var path = require('path');
 var router = express.Router();
@@ -11,119 +13,58 @@ var app = express();
 
 var connection = require('../config/db');
 var variable = require('../extra/variable');
-
+var Paging = require('../extra/paging');
+var db = require('../config/query.js');
 // Upload File By Multer
 var multer = require('multer');
 var storage_inbox = multer.diskStorage({
 	destination: './public/uploads/inbox',
 	filename: function (req, file, cb) {
 		crypto.pseudoRandomBytes(16, function (err, raw) {
-			if (err) return cb(err)
+			if (err) return cb(err);
 
-			cb(null, raw.toString('hex') + path.extname(file.originalname))
-		})
+			cb(null, raw.toString('hex') + path.extname(file.originalname));
+		});
 	}
-})
-var upload_inbox = multer({ storage: storage_inbox })
+});
+
+var upload_inbox = multer({storage: storage_inbox});
 
 var storage_outbox = multer.diskStorage({
 	destination: './public/uploads/outbox',
 	filename: function (req, file, cb) {
 		crypto.pseudoRandomBytes(16, function (err, raw) {
-			if (err) return cb(err)
+			if (err) return cb(err);
 
-			cb(null, raw.toString('hex') + path.extname(file.originalname))
-		})
+			cb(null, raw.toString('hex') + path.extname(file.originalname));
+		});
 	}
-})
-var upload_outbox = multer({ storage: storage_outbox })
+});
+var upload_outbox = multer({storage: storage_outbox});
 
 // Query DB
 
-var data_rak;
-connection.query("SELECT * FROM app_master_rack;", function (err, results) {
-	data_rak = results;
+var data_rak = db.getRak().then(function (data) {
+	return data;
 });
 
-
 var data_disposisi;
-connection.query("SELECT * FROM app_master_disposition;", function (err, results) {
+connection.query('SELECT * FROM app_master_disposition;', function (err, results) {
 	data_disposisi = results;
 });
 
 var count_inbox;
-connection.query("SELECT count(id) as count FROM view_inbox;", function (err, results) {
+connection.query('SELECT count(id) as count FROM view_inbox;', function (err, results) {
+	if (err) {
+		return;
+	}
 	count_inbox = results[0].count;
 });
 
-var count_inbox;
-connection.query("SELECT count(id) as count FROM view_outbox;", function (err, results) {
+var count_outbox;
+connection.query('SELECT count(id) as count FROM view_outbox;', function (err, results) {
 	count_outbox = results[0].count;
 });
-
-
-// Get Home Page
-router.get('/', function(req, res, next) {
-	var query = [	
-		"SELECT * FROM view_inbox ORDER BY id LIMIT 12",
-		"SELECT * FROM view_outbox ORDER BY id LIMIT 12",
-		"SELECT count(id) as count, rack_number FROM view_inbox GROUP BY rack_number LIMIT 3",
-		"SELECT count(id) as count, rack_number FROM view_outbox GROUP BY rack_number LIMIT 3"
-	]
-	connection.query(query.join(";"), function (err, results) {
-		if (err) throw err;
-
-		res.render('./dashboard/index', {
-			title : "Beranda",
-			path : variable.nav,
-			currentPage : req.path,
-			menuActive : "/",
-			data_sm : results[0],
-			data_sk : results[1],
-			data_sm_count : results[2],
-			data_sk_count : results[3],
-			data_rak : data_rak
-		})
-	})
-});
-
-
-
-// Get Surat Masuk Page
-router.get('/surat-masuk', function(req, res, next) {
-
-	// Pagination
-	var pageActive = 1;
-	if ( req.param('page') > 1 ) {
-		pageActive = req.param('page');
-	}
-
-	var paginator = new pagination.SearchPaginator({prelink:req.path, current: pageActive, rowsPerPage: variable.page.limit, totalResult: count_inbox});
-	paginator.getPaginationData();
-
-	var start = paginator._result.current * variable.page.limit - variable.page.limit;
-	var end = variable.page.limit;
-
-	// Path
-	var currentPage = req.path;
-	
-	connection.query("SELECT * FROM view_inbox ORDER BY id LIMIT " + start + "," + end, function (err, rows, field) {
-		if (err) throw err;
-
-		res.render('./surat-masuk/index', {
-			title : "Surat Masuk",
-			path : variable.nav,
-			currentPage : currentPage,
-			menuActive : "/surat-masuk",
-			data : rows,
-			data_rak : data_rak,
-			pages : paginator._result.range,
-			pageActive : paginator._result.current
-		})
-	})
-});
-
-
 
 router.get('/surat-masuk/list', function (req, res, next) {
 
@@ -142,14 +83,14 @@ router.get('/surat-masuk/list', function (req, res, next) {
 	// Path
 	var currentPage = req.path;
 
-	connection.query("SELECT * FROM view_inbox LIMIT " + start + "," + end, function (err, rows, field) {
+	connection.query('SELECT * FROM view_inbox LIMIT ' + start + ',' + end, function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-masuk/index-list', {
-			title : "Surat Masuk",
+			title : 'Surat Masuk',
 			path : variable.nav,
 			currentPage : path.dirname(currentPage),
-			menuActive : "/surat-masuk",
+			menuActive : '/surat-masuk',
 			data : rows,
 			data_rak : data_rak,
 			pages : paginator._result.range,
@@ -158,14 +99,12 @@ router.get('/surat-masuk/list', function (req, res, next) {
 	})
 })
 
-
-
 router
 	.get('/surat-masuk/tambah', function (req, res, next) {
 		res.render('./surat-masuk/tambah', {
-			title : "Tambah Surat Masuk Baru",
+			title : 'Tambah Surat Masuk Baru',
 			path : variable.nav,
-			menuActive : "/surat-masuk",
+			menuActive : '/surat-masuk',
 			data_disposisi : data_disposisi,
 			data_rak : data_rak
 		})
@@ -191,16 +130,14 @@ router
 
 	});
 
-
-
 router
 	.get('/surat-masuk/sunting/:id', function (req, res, next) {
-		connection.query("SELECT * FROM view_inbox WHERE id = " + req.params.id, function (err, rows, field) {
-			var dis = "["+rows[0].inbox_disposition+"]";
+		connection.query('SELECT * FROM view_inbox WHERE id = ' + req.params.id, function (err, rows, field) {
+			var dis = '['+rows[0].inbox_disposition+']';
 			res.render('./surat-masuk/sunting', {
-				title : "Sunting Surat Masuk #" + req.params.id,
+				title : 'Sunting Surat Masuk #' + req.params.id,
 				path : variable.nav,
-				menuActive : "/surat-masuk",
+				menuActive : '/surat-masuk',
 				id : req.params.id,
 				id_user : rows[0].id_user,
 				id_rack : rows[0].id_rack,
@@ -242,14 +179,14 @@ router
 
 
 router.get('/surat-masuk/detail/:id', function (req, res, next) {
-	connection.query("SELECT * FROM view_inbox WHERE id = " + req.params.id, function (err, rows, field) {
+	connection.query('SELECT * FROM view_inbox WHERE id = ' + req.params.id, function (err, rows, field) {
 		if (err) throw err;
 
-		var dis = "["+rows[0].inbox_disposition+"]";
+		var dis = '['+rows[0].inbox_disposition+']';
 		res.render('./surat-masuk/detail', {
-			title : "Detail Surat Masuk #" + req.params.id,
+			title : 'Detail Surat Masuk #' + req.params.id,
 			path : variable.nav,
-			menuActive : "/surat-masuk",
+			menuActive : '/surat-masuk',
 			id : req.params.id,
 			data : rows,
 			data_rak : data_rak,
@@ -263,18 +200,18 @@ router.get('/surat-masuk/detail/:id', function (req, res, next) {
 
 
 router.get('/surat-masuk/cetak', function (req, res, next) {
-	connection.query("SELECT * FROM view_inbox ORDER BY id", function (err, rows, field) {
+	connection.query('SELECT * FROM view_inbox ORDER BY id', function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-masuk/cetak', {
-			title : "Cetak Surat Masuk",
+			title : 'Cetak Surat Masuk',
 			data : rows,
 			data_rak : data_rak,
 			date : function (i) {
 				return moment(rows[i].inbox_date).format('DD-MM-YYYY')
 			},
 			inbox_disposition : function (i) {
-				var dis = "["+rows[i].inbox_disposition+"]";
+				var dis = '['+rows[i].inbox_disposition+']';
 				return JSON.parse(dis);
 			},
 			data_disposisi : data_disposisi
@@ -285,7 +222,7 @@ router.get('/surat-masuk/cetak', function (req, res, next) {
 
 
 router.get('/surat-masuk/hapus/:id', function (req, res, next) {
-	connection.query("DELETE FROM app_inbox WHERE id=" + req.params.id, function (err, rows, field) {
+	connection.query('DELETE FROM app_inbox WHERE id=' + req.params.id, function (err, rows, field) {
 		if (err) throw err;
 
 		res.redirect('/surat-masuk');
@@ -313,14 +250,14 @@ router.get('/surat-keluar', function(req, res, next) {
 	// Path
 	var currentPage = req.path;
 	
-	connection.query("SELECT * FROM view_outbox LIMIT " + start + "," + end, function (err, rows, field) {
+	connection.query('SELECT * FROM view_outbox LIMIT ' + start + ',' + end, function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-keluar/index', {
-			title : "Surat Keluar",
+			title : 'Surat Keluar',
 			path : variable.nav,
 			currentPage : currentPage,
-			menuActive : "/surat-keluar",
+			menuActive : '/surat-keluar',
 			data : rows,
 			data_rak : data_rak,
 			pages : paginator._result.range,
@@ -348,14 +285,14 @@ router.get('/surat-keluar/list', function (req, res, next) {
 	// Path
 	var currentPage = req.path;
 
-	connection.query("SELECT * FROM view_outbox LIMIT " + start + "," + end, function (err, rows, field) {
+	connection.query('SELECT * FROM view_outbox LIMIT ' + start + ',' + end, function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-keluar/index-list', {
-			title : "Surat keluar",
+			title : 'Surat keluar',
 			path : variable.nav,
 			currentPage : path.dirname(currentPage),
-			menuActive : "/surat-keluar",
+			menuActive : '/surat-keluar',
 			data : rows,
 			data_rak : data_rak,
 			pages : paginator._result.range,
@@ -369,9 +306,9 @@ router.get('/surat-keluar/list', function (req, res, next) {
 router
 	.get('/surat-keluar/tambah', function (req, res, next) {
 		res.render('./surat-keluar/tambah', {
-			title : "Tambah Surat keluar Baru",
+			title : 'Tambah Surat keluar Baru',
 			path : variable.nav,
-			menuActive : "/surat-keluar",
+			menuActive : '/surat-keluar',
 			data_rak : data_rak
 		})
 	})
@@ -399,11 +336,11 @@ router
 
 router
 	.get('/surat-keluar/sunting/:id', function (req, res, next) {
-		connection.query("SELECT * FROM view_outbox WHERE id = " + req.params.id, function (err, rows, field) {
+		connection.query('SELECT * FROM view_outbox WHERE id = ' + req.params.id, function (err, rows, field) {
 			res.render('./surat-keluar/sunting', {
-				title : "Sunting Surat keluar #" + req.params.id,
+				title : 'Sunting Surat keluar #' + req.params.id,
 				path : variable.nav,
-				menuActive : "/surat-keluar",
+				menuActive : '/surat-keluar',
 				id : req.params.id,
 				id_user : rows[0].id_user,
 				id_rack : rows[0].id_rack,
@@ -442,13 +379,13 @@ router
 
 
 router.get('/surat-keluar/detail/:id', function (req, res, next) {
-	connection.query("SELECT * FROM view_outbox WHERE id = " + req.params.id, function (err, rows, field) {
+	connection.query('SELECT * FROM view_outbox WHERE id = ' + req.params.id, function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-keluar/detail', {
-			title : "Detail Surat keluar #" + req.params.id,
+			title : 'Detail Surat keluar #' + req.params.id,
 			path : variable.nav,
-			menuActive : "/surat-keluar",
+			menuActive : '/surat-keluar',
 			id : req.params.id,
 			data : rows,
 			data_rak : data_rak,
@@ -460,11 +397,11 @@ router.get('/surat-keluar/detail/:id', function (req, res, next) {
 
 
 router.get('/surat-keluar/cetak', function (req, res, next) {
-	connection.query("SELECT * FROM view_outbox ORDER BY id", function (err, rows, field) {
+	connection.query('SELECT * FROM view_outbox ORDER BY id', function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-keluar/cetak', {
-			title : "Cetak Surat keluar",
+			title : 'Cetak Surat keluar',
 			data : rows,
 			data_rak : data_rak,
 			date : function (i) {
@@ -477,7 +414,7 @@ router.get('/surat-keluar/cetak', function (req, res, next) {
 
 
 router.get('/surat-keluar/hapus/:id', function (req, res, next) {
-	connection.query("DELETE FROM app_outbox WHERE id=" + req.params.id, function (err, rows, field) {
+	connection.query('DELETE FROM app_outbox WHERE id=' + req.params.id, function (err, rows, field) {
 		if (err) throw err;
 
 		res.redirect('/surat-keluar');

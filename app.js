@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var mysql = require('mysql');
 var routes = require('./routes/index');
 var app = express();
-
+var Site = require('./routes/site.js');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -16,12 +16,15 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
-app.use('/', routes);
+// app.use('/', routes);
+var site = new Site();
+app.get('/', site.index);
+app.get('/surat-masuk', site.suratMasuk);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
