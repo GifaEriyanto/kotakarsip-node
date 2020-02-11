@@ -10,6 +10,25 @@ block content
 
 	#body
 
+		- if (alert === "pengaturan-akun-save") {
+
+			.alert-custom Data berhasil disimpan
+
+		- } else if (alert === "pengaturan-akun-username") {
+
+			.alert-custom.red Nama Pengguna telah digunakan, silahkan coba lagi
+
+		- }
+
+		- console.log(alert)
+
+		- if (alert === "logout") {
+
+			script.
+				window.location='/logout';
+
+		- }
+
 		section.container.default-section
 
 			.headline Pengaturan Akun
@@ -51,6 +70,7 @@ block content
 						i.fa.fa-floppy-o
 
 						| Simpan
+
 
 block script
 

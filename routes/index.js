@@ -15,6 +15,13 @@ var expressSession = require('express-session');
 var connection = require('../config/db');
 var variable = require('../extra/variable');
 
+var alert = "";
+function alertClear() {
+	setTimeout(function () {
+		alert = "";
+	}, 1000);
+}
+
 // Upload File By Multer
 var multer = require('multer');
 var storage_inbox = multer.diskStorage({
@@ -91,9 +98,9 @@ router.get('/logout', function(req, res) {
 
 // Get Home Page
 router.get('/', isAuthenticated, function(req, res, next) {
-	var query = [	
-		"SELECT * FROM view_inbox ORDER BY id LIMIT 12",
-		"SELECT * FROM view_outbox ORDER BY id LIMIT 12",
+	var query = [   
+		"SELECT * FROM view_inbox ORDER BY id DESC LIMIT 12",
+		"SELECT * FROM view_outbox ORDER BY id DESC LIMIT 12",
 		"SELECT count(id) as count, rack_number FROM view_inbox GROUP BY rack_number LIMIT 3",
 		"SELECT count(id) as count, rack_number FROM view_outbox GROUP BY rack_number LIMIT 3"
 	]
@@ -110,7 +117,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
 			data_sm_count : results[2],
 			data_sk_count : results[3],
 			data_rak : data_rak,
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 });
@@ -135,7 +142,7 @@ router.get('/surat-masuk', isAuthenticated, function(req, res, next) {
 	// Path
 	var currentPage = req.path;
 	
-	connection.query("SELECT * FROM view_inbox ORDER BY id LIMIT " + start + "," + end, function (err, rows, field) {
+	connection.query("SELECT * FROM view_inbox ORDER BY id DESC LIMIT " + start + "," + end, function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-masuk/index', {
@@ -147,7 +154,7 @@ router.get('/surat-masuk', isAuthenticated, function(req, res, next) {
 			data_rak : data_rak,
 			pages : paginator._result.range,
 			pageActive : paginator._result.current,
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 });
@@ -171,7 +178,7 @@ router.get('/surat-masuk/list', isAuthenticated, function (req, res, next) {
 	// Path
 	var currentPage = req.path;
 
-	connection.query("SELECT * FROM view_inbox LIMIT " + start + "," + end, function (err, rows, field) {
+	connection.query("SELECT * FROM view_inbox ORDER BY id DESC LIMIT " + start + "," + end, function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-masuk/index-list', {
@@ -186,7 +193,7 @@ router.get('/surat-masuk/list', isAuthenticated, function (req, res, next) {
 			},
 			pages : paginator._result.range,
 			pageActive : paginator._result.current,
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 })
@@ -195,7 +202,7 @@ router.get('/surat-masuk/list', isAuthenticated, function (req, res, next) {
 
 router
 	.get('/surat-masuk/tambah', isAuthenticated, function (req, res, next) {
-		connection.query("SELECT id FROM app_users WHERE user_login = '" + req.session.passport.user + "'", function (err, results) {
+		connection.query("SELECT id FROM app_users WHERE id = '" + req.session.passport.user.user_id + "'", function (err, results) {
 			res.render('./surat-masuk/tambah', {
 				title : "Tambah Surat Masuk Baru",
 				path : variable.nav,
@@ -203,7 +210,7 @@ router
 				data_disposisi : data_disposisi,
 				data_rak : data_rak,
 				id : results[0].id,
-				name : req.session.passport.user
+				name : req.session.passport.user.user_displayname
 			})
 		})
 	})
@@ -251,7 +258,7 @@ router
 				data_disposisi : data_disposisi,
 				date : moment(rows[0].inbox_date).format('YYYY-MM-DD'),
 				data_rak : data_rak,
-				name : req.session.passport.user
+				name : req.session.passport.user.user_displayname
 			})
 
 		})
@@ -289,7 +296,7 @@ router.get('/surat-masuk/detail/:id', isAuthenticated, function (req, res, next)
 
 		connection.query("SELECT id FROM view_notification WHERE id_content = '" + rows[0].id + "' AND user_login_get = '" + req.session.passport.user + "'", function (err, notif) {
 			if (notif.length > 0) {
-				connection.query('UPDATE app_notifications_read SET status = ? WHERE id = ?', [0, notif[0].id]);
+				connection.query('UPDATE app_notifications_read SET status="0" WHERE id = ?', [notif[0].id]);
 			}
 		})
 
@@ -305,7 +312,7 @@ router.get('/surat-masuk/detail/:id', isAuthenticated, function (req, res, next)
 			inbox_disposition : JSON.parse(dis),
 			data_disposisi : data_disposisi,
 			date : moment(rows[0].inbox_date).format('DD-MM-YYYY'),
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 })
@@ -328,7 +335,7 @@ router.get('/surat-masuk/cetak', isAuthenticated, function (req, res, next) {
 				return JSON.parse(dis);
 			},
 			data_disposisi : data_disposisi,
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 })
@@ -364,7 +371,7 @@ router.get('/surat-keluar', isAuthenticated, function(req, res, next) {
 	// Path
 	var currentPage = req.path;
 	
-	connection.query("SELECT * FROM view_outbox LIMIT " + start + "," + end, function (err, rows, field) {
+	connection.query("SELECT * FROM view_outbox ORDER BY id DESC LIMIT " + start + "," + end, function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-keluar/index', {
@@ -376,7 +383,7 @@ router.get('/surat-keluar', isAuthenticated, function(req, res, next) {
 			data_rak : data_rak,
 			pages : paginator._result.range,
 			pageActive : paginator._result.current,
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 });
@@ -400,7 +407,7 @@ router.get('/surat-keluar/list', isAuthenticated, function (req, res, next) {
 	// Path
 	var currentPage = req.path;
 
-	connection.query("SELECT * FROM view_outbox LIMIT " + start + "," + end, function (err, rows, field) {
+	connection.query("SELECT * FROM view_outbox ORDER BY id DESC LIMIT " + start + "," + end, function (err, rows, field) {
 		if (err) throw err;
 
 		res.render('./surat-keluar/index-list', {
@@ -415,7 +422,7 @@ router.get('/surat-keluar/list', isAuthenticated, function (req, res, next) {
 			},
 			pages : paginator._result.range,
 			pageActive : paginator._result.current,
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 })
@@ -424,14 +431,14 @@ router.get('/surat-keluar/list', isAuthenticated, function (req, res, next) {
 
 router
 	.get('/surat-keluar/tambah', isAuthenticated, function (req, res, next) {
-		connection.query("SELECT id FROM app_users WHERE user_login = '" + req.session.passport.user + "'", function (err, results) {
+		connection.query("SELECT id FROM app_users WHERE id = '" + req.session.passport.user.user_id + "'", function (err, results) {
 			res.render('./surat-keluar/tambah', {
 				title : "Tambah Surat keluar Baru",
 				path : variable.nav,
 				menuActive : "/surat-keluar",
 				data_rak : data_rak,
 				id : results[0].id,
-				name : req.session.passport.user
+				name : req.session.passport.user.user_displayname
 			})
 		})
 	})
@@ -474,7 +481,7 @@ router
 				outbox_desc : rows[0].outbox_desc,
 				date : moment(rows[0].outbox_date).format('YYYY-MM-DD'),
 				data_rak : data_rak,
-				name : req.session.passport.user
+				name : req.session.passport.user.user_displayname
 			})
 
 		})
@@ -509,9 +516,9 @@ router.get('/surat-keluar/detail/:id', isAuthenticated, function (req, res, next
 	connection.query("SELECT * FROM view_outbox WHERE id = " + req.params.id, function (err, rows, field) {
 		if (err) throw err;
 
-		connection.query("SELECT id FROM view_notification WHERE id_content = '" + rows[0].id + "' AND user_login_get = '" + req.session.passport.user + "'", function (err, notif) {
+		connection.query("SELECT id FROM view_notification WHERE id_content = '" + rows[0].id + "' AND id_user = '" + req.session.passport.user.user_id + "'", function (err, notif) {
 			if (notif.length > 0) {
-				connection.query('UPDATE app_notifications_read SET status = ? WHERE id = ?', [0, notif[0].id]);
+				connection.query('UPDATE app_notifications_read SET status="0" WHERE id = ?', [notif[0].id]);
 			}
 		})
 
@@ -524,7 +531,7 @@ router.get('/surat-keluar/detail/:id', isAuthenticated, function (req, res, next
 			title : rows[0].outbox_title,
 			data_rak : data_rak,
 			date : moment(rows[0].outbox_date).format('DD-MM-YYYY'),
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 })
@@ -542,7 +549,7 @@ router.get('/surat-keluar/cetak', isAuthenticated, function (req, res, next) {
 			date : function (i) {
 				return moment(rows[i].outbox_date).format('DD-MM-YYYY')
 			},
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 })
@@ -566,10 +573,10 @@ router
 		// Path
 		var currentPage = req.path;
 
-		var query = [	
+		var query = [   
 			"SELECT * FROM app_master_rack WHERE archive = '0'",
 			"SELECT * FROM app_master_disposition WHERE archive = '0'",
-			"SELECT * FROM app_users WHERE archive = '0' AND user_login != '" + req.session.passport.user + "'"
+			"SELECT * FROM app_users WHERE archive = '0' AND id != '" + req.session.passport.user.user_id + "'"
 		]
 		
 		connection.query(query.join(";"), function (err, results) {
@@ -583,7 +590,7 @@ router
 				data_rack : results[0],
 				data_disposition : results[1],
 				data_users : results[2],
-				name : req.session.passport.user
+				name : req.session.passport.user.user_displayname
 			})
 		})
 	})
@@ -688,7 +695,7 @@ router
 
 router
 	.get('/pengaturan-akun', isAuthenticated, function (req, res, next) {
-		connection.query('SELECT * FROM app_users WHERE user_login="' + req.session.passport.user + '"', function (err, results) {
+		connection.query('SELECT * FROM app_users WHERE id = "' + req.session.passport.user.user_id + '"', function (err, results) {
 			if (err) throw err;
 			
 			res.render('./pengaturan-akun/index', {
@@ -696,11 +703,12 @@ router
 				path : variable.nav,
 				menuActive : "/master",
 				data : results,
-				name : req.session.passport.user
+				name : req.session.passport.user.user_displayname,
+				alert : alert
 			})
 		})
 	})
-	.post('/pengaturan-akun', function (req, res) {
+	.post('/pengaturan-akun', isAuthenticated, function (req, res) {
 
 		var post = {
 			id : req.body.id,
@@ -717,12 +725,34 @@ router
 				if (err) throw err;
 			});
 		}
-
-		connection.query('UPDATE app_users SET user_login = ?, user_displayname = ?, user_email = ? WHERE id = ?', [post.user_login, post.user_displayname, post.user_email, post.id], function(err, result) {
+		
+		connection.query('UPDATE app_users SET user_displayname = ?, user_email = ? WHERE id = ?', [post.user_displayname, post.user_email, post.id], function(err, result) {
 			if (err) throw err;
 
-			res.redirect('/pengaturan-akun');
+			alert = "pengaturan-akun-save";
+			alertClear();
 		});
+
+		connection.query('SELECT * FROM app_users WHERE id = "' + post.id + '"', function (err, results) {
+			if (err) throw err;
+
+			if (req.body.user_login !== req.session.passport.user.user_login) {
+				if (results.length > 0) {
+					alert = "pengaturan-akun-username";
+					alertClear();
+				} else {
+					connection.query('UPDATE app_users SET user_login = ? WHERE id = ?', [post.user_login, post.id], function(err, result) {
+						if (err) throw err;
+
+					});
+					alert = "logout";
+					alertClear();
+				}
+			}
+		})
+
+		res.redirect("/pengaturan-akun");
+		
 	})
 
 
@@ -747,8 +777,8 @@ router.get('/search', isAuthenticated, function (req, res, next) {
 		}
 	}
 
-	var query = "SELECT * FROM view_" + req.query.type + " WHERE " + rack + daterange + " " +  req.query.type +"_title LIKE '%" + req.query.q + "%' ORDER BY id";
-	console.log(query);
+	var query = "SELECT * FROM view_" + req.query.type + " WHERE " + rack + daterange + " " +  req.query.type +"_title LIKE '%" + req.query.q + "%' ORDER BY id DESC";
+
 	// Pagination
 	var pageActive = 1;
 	if ( req.param('page') > 1 ) {
@@ -778,28 +808,62 @@ router.get('/search', isAuthenticated, function (req, res, next) {
 			rack : req.query.rack,
 			daterange : req.query.daterange,
 			q : req.query.q,
-			name : req.session.passport.user
+			name : req.session.passport.user.user_displayname
 		})
 	})
 })
 
 
 
-router.get('/notif', isAuthenticated, function (req, res, next) {
+router
+	.get('/notifikasi', isAuthenticated, function (req, res, next) {
 
-	connection.query("SELECT * FROM app_users WHERE user_login = '" + req.session.passport.user + "'", function (err, results) {
+		connection.query("SELECT * FROM app_users WHERE id = '" + req.session.passport.user.user_id + "'", function (err, results) {
+			var id = results[0].id;
+
+			connection.query("SELECT * FROM view_notification WHERE id_user = '" + id + "' AND id_user_create != '" + req.session.passport.user.user_id + "' ORDER BY id DESC LIMIT 30" , function (err, results) {
+				if (err) throw err;
+
+				res.render('./notif/index', {
+					title : "Notifikasi",
+					path : variable.nav,
+					menuActive : "",
+					data : results,
+					name : req.session.passport.user.user_displayname
+				})
+			})
+		})
+
+	})
+	.post('/notifikasi', function (req, res) {
+
+		connection.query("SELECT * FROM app_users WHERE id = '" + req.session.passport.user.user_id + "'", function (err, results) {
+			var id = results[0].id;
+
+			connection.query('UPDATE view_notification SET status = "0" WHERE status="1" AND id_user = ? AND id_user_create != ?', [id, req.session.passport.user.user_id], function(err, result) {
+				if (err) throw err;
+
+				res.redirect('/notifikasi');
+			});
+		})
+	})
+
+
+
+router.get('/notifikasi/data', isAuthenticated, function (req, res, next) {
+
+	connection.query("SELECT * FROM app_users WHERE id = '" + req.session.passport.user.user_id + "'", function (err, results) {
 		var id = results[0].id;
 
-		connection.query("SELECT * FROM view_notification WHERE id_user = '" + id + "' AND user_login != '" + req.session.passport.user + "' ORDER BY id DESC LIMIT 30" , function (err, results) {
+		connection.query("SELECT * FROM view_notification WHERE status='1' AND id_user = '" + id + "' AND id_user_create != '" + req.session.passport.user.user_id + "' ORDER BY id DESC LIMIT 30" , function (err, results) {
 			if (err) throw err;
 
-			res.render('./notif/index', {
-				title : "Notifikasi",
-				path : variable.nav,
-				menuActive : "",
-				data : results,
-				name : req.session.passport.user
-			})
+			if (results.length > 0) {
+				res.render('./notif/data', {
+					status : 'badge-active'
+				})
+			}
+
 		})
 	})
 
